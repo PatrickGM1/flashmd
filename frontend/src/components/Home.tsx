@@ -1,189 +1,198 @@
-import { useRef, useState } from 'react'
-import {
-  Box, Typography, Paper, Button, TextField,
-  InputAdornment, Divider, Alert, CircularProgress,
-} from '@mui/material'
-import { Upload, LinkOutlined, StyleOutlined } from '@mui/icons-material'
-import { Chapter } from '../types'
-import { parseDeck } from '../utils/parser'
+import { useEffect, useRef, useState } from 'react'
+import { Box, Typography, Button, Alert, CircularProgress, LinearProgress } from '@mui/material'
+import { DeleteOutlined, UploadFileOutlined } from '@mui/icons-material'
+import { Deck, DeckSummary } from '../types'
+import { listDecks, getDeck, createDeck, deleteDeck } from '../api'
+import Shell, { Brand } from './Shell'
 
 interface Props {
-  onDeckLoaded: (chapters: Chapter[]) => void
+  onOpenDeck: (deck: Deck) => void
 }
 
-export default function Home({ onDeckLoaded }: Props) {
+export default function Home({ onOpenDeck }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [url, setUrl] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [dragging, setDragging] = useState(false)
+  const [decks, setDecks] = useState<DeckSummary[]>([])
+  const [loadingList, setLoadingList] = useState(true)
 
-  const loadContent = (content: string, source: string) => {
-    const chapters = parseDeck(content)
-    if (chapters.length === 0) {
-      setError(`No valid flashcards found in "${source}". Check the format.`)
-      return
-    }
-    onDeckLoaded(chapters)
+  const refresh = () => {
+    listDecks()
+      .then(setDecks)
+      .catch(() => setError('Cannot reach the server. Is the backend running on :8080?'))
+      .finally(() => setLoadingList(false))
   }
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  useEffect(refresh, [])
+
+  const upload = async (label: string, content: string) => {
+    setBusy(true)
     setError(null)
+    try {
+      onOpenDeck(await createDeck(label, content))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Upload failed')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const handleFile = (file: File) => {
     const reader = new FileReader()
-    reader.onload = (ev) => loadContent(ev.target?.result as string, file.name)
+    reader.onload = (ev) => upload(file.name, ev.target?.result as string)
     reader.readAsText(file)
   }
 
-  const handleUrl = async () => {
-    if (!url.trim()) return
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch(`/api/fetch-deck?url=${encodeURIComponent(url.trim())}`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      loadContent(await res.text(), url)
-    } catch {
-      setError('Failed to load URL. Make sure it points to a raw .md file.')
-    } finally {
-      setLoading(false)
-    }
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file) handleFile(file)
   }
 
   const handleExample = async () => {
-    setLoading(true)
+    setBusy(true)
     setError(null)
     try {
       const res = await fetch('/example.md')
-      loadContent(await res.text(), 'example.md')
+      await upload('Example deck', await res.text())
     } catch {
       setError('Failed to load example deck.')
-    } finally {
-      setLoading(false)
+      setBusy(false)
     }
   }
 
-  return (
-    <Box
-      minHeight="100vh"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      px={2}
-      bgcolor="background.default"
-    >
-      <Box width="100%" maxWidth={480}>
-        {/* Logo */}
-        <Box textAlign="center" mb={5}>
-          <Box
-            display="inline-flex"
-            alignItems="center"
-            justifyContent="center"
-            sx={{
-              width: 56,
-              height: 56,
-              borderRadius: 3,
-              bgcolor: 'rgba(124,106,247,0.12)',
-              border: '1px solid',
-              borderColor: 'primary.main',
-              mb: 2,
-            }}
-          >
-            <StyleOutlined sx={{ color: 'primary.main', fontSize: 28 }} />
-          </Box>
-          <Typography variant="h3" fontWeight={800} letterSpacing="-1px">
-            flash<span style={{ color: '#7c6af7' }}>md</span>
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mt={1}>
-            Turn any <code style={{ color: '#7c6af7', background: 'rgba(124,106,247,0.12)', padding: '2px 6px', borderRadius: 4 }}>.md</code> file into a flashcard deck
-          </Typography>
-        </Box>
+  const open = async (id: string) => {
+    setBusy(true)
+    setError(null)
+    try {
+      onOpenDeck(await getDeck(id))
+    } catch {
+      setError('Could not open deck.')
+      setBusy(false)
+    }
+  }
 
-        {/* Upload */}
-        <Paper
-          onClick={() => fileInputRef.current?.click()}
-          variant="outlined"
+  const remove = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setDecks(d => d.filter(x => x.id !== id))
+    try { await deleteDeck(id) } catch { refresh() }
+  }
+
+  return (
+    <Shell
+      left={<Brand />}
+      right={
+        <Button
+          size="small"
+          onClick={handleExample}
+          disabled={busy}
+          sx={{ color: 'text.secondary', fontSize: 13, '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
+        >
+          {busy ? <CircularProgress size={13} color="inherit" sx={{ mr: 1 }} /> : null}
+          Example
+        </Button>
+      }
+    >
+      {/* Drop zone */}
+      <Box
+        onClick={() => !busy && fileInputRef.current?.click()}
+        onDrop={handleDrop}
+        onDragOver={e => { e.preventDefault(); setDragging(true) }}
+        onDragLeave={() => setDragging(false)}
+        sx={{
+          border: '1px dashed',
+          borderColor: dragging ? 'primary.main' : '#2c2c30',
+          borderRadius: 2.5,
+          py: 6, px: 4,
+          cursor: busy ? 'default' : 'pointer',
+          textAlign: 'center',
+          opacity: busy ? 0.6 : 1,
+          bgcolor: dragging ? 'rgba(124,106,247,0.06)' : 'rgba(255,255,255,0.012)',
+          transition: 'all 0.15s ease',
+          '&:hover': { borderColor: busy ? '#2c2c30' : '#7c6af7', bgcolor: busy ? undefined : 'rgba(124,106,247,0.04)' },
+        }}
+      >
+        <Box
           sx={{
-            p: 4,
-            textAlign: 'center',
-            cursor: 'pointer',
-            borderStyle: 'dashed',
-            borderColor: '#2a2a2a',
-            bgcolor: 'background.paper',
-            transition: 'border-color 0.2s',
-            '&:hover': { borderColor: 'primary.main' },
-            mb: 2,
+            width: 44, height: 44, mx: 'auto', mb: 2, borderRadius: 2,
+            bgcolor: 'rgba(124,106,247,0.1)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
-          <Upload sx={{ fontSize: 36, color: 'text.secondary', mb: 1 }} />
-          <Typography fontWeight={600} color="text.primary">Upload a .md file</Typography>
-          <Typography variant="body2" color="text.secondary" mt={0.5}>Click to browse</Typography>
-          <input ref={fileInputRef} type="file" accept=".md,text/plain" hidden onChange={handleFile} />
-        </Paper>
-
-        {/* Divider */}
-        <Divider sx={{ my: 2, borderColor: '#2a2a2a', color: 'text.secondary', fontSize: 12 }}>or</Divider>
-
-        {/* URL */}
-        <Paper variant="outlined" sx={{ p: 2.5, bgcolor: 'background.paper', borderColor: '#2a2a2a' }}>
-          <Typography variant="body2" fontWeight={600} color="text.secondary" mb={1.5} display="flex" alignItems="center" gap={0.5}>
-            <LinkOutlined sx={{ fontSize: 16 }} /> Load from URL
-          </Typography>
-          <Box display="flex" gap={1}>
-            <TextField
-              fullWidth
-              size="small"
-              placeholder="https://raw.githubusercontent.com/..."
-              value={url}
-              onChange={e => setUrl(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleUrl()}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LinkOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  bgcolor: '#0e0e0e',
-                  '& fieldset': { borderColor: '#2a2a2a' },
-                  '&:hover fieldset': { borderColor: '#7c6af7' },
-                },
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={handleUrl}
-              disabled={loading || !url.trim()}
-              sx={{ minWidth: 80, whiteSpace: 'nowrap' }}
-            >
-              {loading ? <CircularProgress size={16} color="inherit" /> : 'Load'}
-            </Button>
-          </Box>
-        </Paper>
-
-        {/* Error */}
-        {error && (
-          <Alert severity="error" sx={{ mt: 2, bgcolor: 'rgba(211,47,47,0.1)', color: '#f48fb1', border: '1px solid rgba(211,47,47,0.3)' }}>
-            {error}
-          </Alert>
-        )}
-
-        {/* Example link */}
-        <Box textAlign="center" mt={3}>
-          <Button
-            variant="text"
-            size="small"
-            onClick={handleExample}
-            disabled={loading}
-            sx={{ color: 'text.secondary', fontSize: 12, '&:hover': { color: 'primary.main' } }}
-          >
-            Try the example deck
-          </Button>
+          <UploadFileOutlined sx={{ color: 'primary.main', fontSize: 22 }} />
         </Box>
+        <Typography fontWeight={600} fontSize={15} color="text.primary">
+          Drop a markdown file
+        </Typography>
+        <Typography variant="body2" color="text.secondary" mt={0.5}>
+          or click to browse
+        </Typography>
+        <input ref={fileInputRef} type="file" accept=".md,text/plain" hidden
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f) }} />
       </Box>
-    </Box>
+
+      {error && (
+        <Alert severity="error" sx={{ mt: 2, bgcolor: 'rgba(211,47,47,0.08)', color: '#f48fb1', border: '1px solid rgba(211,47,47,0.2)', py: 0.5 }}>
+          {error}
+        </Alert>
+      )}
+
+      {/* Decks */}
+      {!loadingList && decks.length > 0 && (
+        <Box mt={5}>
+          <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: '0.1em', fontWeight: 600 }}>
+            Your decks
+          </Typography>
+          <Box mt={1.5} display="flex" flexDirection="column" gap={1}>
+            {decks.map(deck => {
+              const studied = deck.known + deck.unknown
+              const pct = studied > 0 ? Math.round((deck.known / deck.totalCards) * 100) : null
+              const barColor = pct === null ? '#3a3a40' : pct >= 80 ? '#66bb6a' : pct >= 50 ? '#ffa726' : '#ef5350'
+
+              return (
+                <Box
+                  key={deck.id}
+                  onClick={() => open(deck.id)}
+                  sx={{
+                    border: '1px solid', borderColor: 'divider', borderRadius: 2,
+                    px: 2, py: 1.75,
+                    cursor: 'pointer',
+                    transition: 'border-color 0.15s, background 0.15s',
+                    '&:hover': { borderColor: '#3a3548', bgcolor: 'rgba(255,255,255,0.015)' },
+                    '&:hover .del': { opacity: 1 },
+                  }}
+                >
+                  <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+                    <Typography fontWeight={600} fontSize={14} color="text.primary" noWrap sx={{ mr: 2 }}>
+                      {deck.label}
+                    </Typography>
+                    <Box display="flex" alignItems="center" gap={1.5} flexShrink={0}>
+                      <Typography variant="caption" sx={{ color: barColor, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
+                        {pct === null ? `${deck.totalCards} cards` : `${deck.known}/${deck.totalCards}`}
+                      </Typography>
+                      <DeleteOutlined
+                        className="del"
+                        onClick={e => remove(deck.id, e)}
+                        sx={{ fontSize: 15, color: '#444', opacity: 0, transition: 'opacity 0.15s, color 0.15s', '&:hover': { color: '#ef5350' } }}
+                      />
+                    </Box>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={pct ?? 0}
+                    sx={{
+                      height: 3, borderRadius: 2, bgcolor: '#1c1c20',
+                      '& .MuiLinearProgress-bar': { bgcolor: barColor, borderRadius: 2 },
+                    }}
+                  />
+                </Box>
+              )
+            })}
+          </Box>
+        </Box>
+      )}
+    </Shell>
   )
 }

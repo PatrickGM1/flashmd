@@ -3,54 +3,45 @@ import ReactDOM from 'react-dom/client'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import App from './App'
 
+const display = '"Space Grotesk", system-ui, sans-serif'
+const body = '"Inter", system-ui, sans-serif'
+
 const theme = createTheme({
   typography: {
-    fontFamily: 'Inter, system-ui, sans-serif',
+    fontFamily: body,
+    h1: { fontFamily: display, fontWeight: 700, letterSpacing: '-0.02em' },
+    h2: { fontFamily: display, fontWeight: 700, letterSpacing: '-0.02em' },
+    h3: { fontFamily: display, fontWeight: 700, letterSpacing: '-0.02em' },
+    h4: { fontFamily: display, fontWeight: 700, letterSpacing: '-0.01em' },
+    h5: { fontFamily: display, fontWeight: 600, letterSpacing: '-0.01em' },
+    h6: { fontFamily: display, fontWeight: 600 },
+    button: { fontFamily: body, textTransform: 'none', fontWeight: 600 },
+    body1: { letterSpacing: '-0.005em' },
+    body2: { letterSpacing: '-0.005em' },
   },
   palette: {
     mode: 'dark',
-    primary: {
-      main: '#7c6af7',
-    },
+    primary: { main: '#7c6af7' },
     background: {
-      default: '#0e0e0e',
-      paper: '#161616',
+      default: '#0c0c0d',
+      paper: '#141416',
     },
     text: {
-      primary: '#e8e8e8',
-      secondary: '#888888',
+      primary: '#ededed',
+      secondary: '#8a8a8f',
     },
-    divider: '#2a2a2a',
+    divider: '#222225',
   },
-  shape: {
-    borderRadius: 12,
-  },
+  shape: { borderRadius: 10 },
   components: {
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          border: '1px solid #2a2a2a',
-          backgroundImage: 'none',
-          '&:hover': {
-            borderColor: '#7c6af7',
-          },
-        },
-      },
-    },
     MuiButton: {
       styleOverrides: {
-        contained: {
-          boxShadow: 'none',
-          '&:hover': { boxShadow: 'none' },
-        },
+        root: { borderRadius: 8 },
+        contained: { boxShadow: 'none', '&:hover': { boxShadow: 'none' } },
       },
     },
     MuiOutlinedInput: {
-      styleOverrides: {
-        notchedOutline: {
-          borderColor: '#2a2a2a',
-        },
-      },
+      styleOverrides: { notchedOutline: { borderColor: '#222225' } },
     },
   },
 })
