@@ -2,18 +2,23 @@ services:
   backend:
     build: ./backend
     restart: unless-stopped
+    # decks.json lives on the host so it survives `up`/`down` and is easy to back up
     volumes:
-      - deck-data:/app/data
+      - ./backend/data:/app/data
     expose:
       - "8080"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8080"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
 
   frontend:
     build: ./frontend
     restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - "3000:80"
-
-volumes:
-  deck-data:

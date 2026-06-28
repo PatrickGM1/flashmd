@@ -1,5 +1,10 @@
 package com.flashmd.controller.dto;
 
+import com.flashmd.model.Grade;
+
 import java.util.List;
 
-public record ProgressRequest(List<String> known, List<String> unknown) {}
+/** A study session's results: a grade per card reviewed. */
+public record ProgressRequest(List<GradeEntry> grades) {
+    public record GradeEntry(String question, Grade grade) {}
+}

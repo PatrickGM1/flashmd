@@ -1,28 +1,35 @@
 import { useState } from 'react'
 import { Box, Typography, Button, Checkbox, TextField, InputAdornment } from '@mui/material'
-import { ArrowBackOutlined, PlayArrowRounded, ReplayRounded } from '@mui/icons-material'
+import { ArrowBackOutlined, PlayArrowRounded, ReplayRounded, EditOutlined } from '@mui/icons-material'
 import { Deck, Card } from '../types'
 import { shuffleCards } from '../utils/parser'
-import { statsFor, accuracyColor } from '../utils/stats'
+import { statsFor, accuracyColor, readProgress, orderForReview } from '../utils/stats'
+import { resetProgress } from '../api'
 import { panel, tile } from '../ui'
-import Shell, { Brand } from './Shell'
+import Shell from './Shell'
 
 interface Props {
   deck: Deck
   onStart: (cards: Card[]) => void
   onBack: () => void
+  onEdit: () => void
+  onDeckChange: (deck: Deck) => void
 }
 
-export default function ChapterSelector({ deck, onStart, onBack }: Props) {
+export default function ChapterSelector({ deck, onStart, onBack, onEdit, onDeckChange }: Props) {
+  const reset = async () => {
+    if (!window.confirm('Reset all progress for this deck?')) return
+    try { onDeckChange(await resetProgress(deck.id)) } catch { /* ignore */ }
+  }
+
   const chapters = deck.chapters
   const progress = deck.progress
   const [selected, setSelected] = useState<Set<number>>(new Set(chapters.map((_, i) => i)))
   const [randomCount, setRandomCount] = useState<string>('')
 
   const allCards = chapters.flatMap(ch => ch.cards)
-  const knownSet = new Set(progress?.known ?? [])
-  const wrongSet = new Set(progress?.unknown ?? [])
-  const wrongCards = allCards.filter(c => wrongSet.has(c.question))
+  const { known: knownSet, wrong: wrongSet, due: dueSet } = readProgress(progress)
+  const dueCards = allCards.filter(c => dueSet.has(c.question))
   const deckStat = statsFor(allCards, knownSet, wrongSet)
 
   const allSelected = selected.size === chapters.length
@@ -54,7 +61,15 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
           Decks
         </Button>
       }
-      right={<Brand />}
+      right={
+        <Button
+          startIcon={<EditOutlined sx={{ fontSize: 17 }} />}
+          onClick={onEdit}
+          sx={{ color: 'text.secondary', fontSize: 13, '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
+        >
+          Edit
+        </Button>
+      }
     >
       <Typography variant="h5" mb={0.5} noWrap>{deck.label}</Typography>
       <Typography variant="body2" color="text.secondary" mb={3}>
@@ -63,45 +78,57 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
 
       {/* Deck totals */}
       {deckStat.done > 0 && (
-        <Box display="flex" gap={1.5} mb={3}>
-          <StatTile label="Studied" value={`${deckStat.done}/${deckStat.total}`} color="#9a8cf9" />
-          <StatTile label="Correct" value={`${deckStat.correct}/${deckStat.done}`} color={accuracyColor(deckStat)} />
-        </Box>
+        <>
+          <Box display="flex" gap={1.5} mb={1.5}>
+            <StatTile label="Studied" value={`${deckStat.done}/${deckStat.total}`} color="#9a8cf9" />
+            <StatTile label="Correct" value={`${deckStat.correct}/${deckStat.done}`} color={accuracyColor(deckStat)} />
+          </Box>
+          <Box textAlign="right" mb={3}>
+            <Typography
+              component="span"
+              variant="caption"
+              onClick={reset}
+              sx={{ cursor: 'pointer', color: '#6b6b73', '&:hover': { color: '#ef5e4e' } }}
+            >
+              Reset progress
+            </Typography>
+          </Box>
+        </>
       )}
 
-      {/* Review wrong cards */}
-      {wrongCards.length > 0 && (
+      {/* Due for review (spaced repetition) */}
+      {dueCards.length > 0 && (
         <Box
-          onClick={() => onStart(shuffleCards(wrongCards))}
+          onClick={() => onStart(orderForReview(dueCards, progress))}
           sx={{
             ...tile,
             mb: 4,
             display: 'flex', alignItems: 'stretch', gap: 0,
             p: 0,
             overflow: 'hidden',
-            '&:hover': { borderColor: '#6a3f43' },
+            '&:hover': { borderColor: '#5a4a86' },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', px: 2, bgcolor: '#ef5e4e', color: '#1a0d0b' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', px: 2, bgcolor: '#7c6af7', color: '#0e0a1f' }}>
             <ReplayRounded sx={{ fontSize: 24 }} />
           </Box>
           <Box flex={1} py={1.5} px={2}>
             <Typography fontWeight={600} fontSize={14.5} color="text.primary">
-              Review the ones you missed
+              Due for review
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              last studied {progress?.lastStudied}
+              weakest cards first{progress?.lastStudied ? `, last studied ${progress.lastStudied}` : ''}
             </Typography>
           </Box>
           <Box display="flex" alignItems="center" pr={2}>
             <Box
               sx={{
                 fontFamily: '"IBM Plex Mono", monospace', fontWeight: 600, fontSize: 15,
-                color: '#ef5e4e', minWidth: 30, textAlign: 'center', py: 0.25, borderRadius: '7px',
-                border: '1.5px solid #45292a', bgcolor: 'rgba(239,94,78,0.08)',
+                color: '#9a8cf9', minWidth: 30, textAlign: 'center', py: 0.25, borderRadius: '7px',
+                border: '1.5px solid #3a3460', bgcolor: 'rgba(124,106,247,0.1)',
               }}
             >
-              {wrongCards.length}
+              {dueCards.length}
             </Box>
           </Box>
         </Box>

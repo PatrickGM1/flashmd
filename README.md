@@ -14,10 +14,24 @@
 
 - Upload any `.md` deck (drag and drop or click)
 - Study by chapter, or pick a random subset of N cards
-- Flip cards and mark each as known or missed
-- Decks and progress are stored by the backend and survive reloads
-- "Review wrong" mode replays only the cards you missed
-- Saved decks show up under "Your decks" with a known/total score
+- **Spaced repetition** (Leitner boxes) with Anki-style grading
+  (Again / Hard / Good / Easy): cards you miss come back sooner, cards you know
+  recede. "Due for review" and "Study all due" replay the weakest cards first
+- **Undo** a mis-grade mid-session; live correct / missed tally
+- **Daily streak** tracked across sessions
+- **Markdown answers**: bold, lists, code blocks and links render on the back
+- **Edit decks in-app**, rename them, reset progress, export back to `.md`
+- Per-chapter and per-deck stats (studied / correct)
+- Decks and progress are stored by the backend and survive restarts
+
+### Keyboard shortcuts (during study)
+
+| Key             | Action                       |
+| --------------- | ---------------------------- |
+| `Space`/`Enter` | Flip card                    |
+| `1` `2` `3` `4` | Grade Again / Hard / Good / Easy |
+| `U`/`Backspace` | Undo last grade              |
+| `Esc`           | Quit session                 |
 
 ## Quick start (Docker)
 
@@ -30,15 +44,14 @@ docker compose up --build
 Then open http://localhost:3000
 
 That builds and runs both containers. The frontend (nginx) serves the app and
-proxies `/api` to the backend, so port 3000 is the only one you touch. Decks
-are kept in a named volume (`deck-data`), so they persist across restarts.
+proxies `/api` to the backend, so port 3000 is the only one you touch.
+
+Decks and progress are written to `backend/data/decks.json` on the host (bind
+mounted into the backend). They survive `docker compose down` and `up` — to
+wipe everything, just delete that file. Back it up by copying it.
 
 Stop with `Ctrl+C`, or run detached with `docker compose up --build -d` and
-stop later with `docker compose down`. To wipe all saved decks:
-
-```bash
-docker compose down -v
-```
+stop later with `docker compose down`.
 
 ## Deck format
 
@@ -85,15 +98,28 @@ frontend needs the backend running to load, save, or list decks.
 
 ### REST API (`/api/decks`)
 
-| Method | Path             | Purpose                          |
-| ------ | ---------------- | -------------------------------- |
-| GET    | `/`              | List decks with progress summary |
-| GET    | `/{id}`          | Full deck with cards + progress  |
-| POST   | `/`              | Create a deck from raw markdown  |
-| PUT    | `/{id}/progress` | Save known/missed questions      |
-| DELETE | `/{id}`          | Delete a deck                    |
+| Method | Path                    | Purpose                            |
+| ------ | ----------------------- | ---------------------------------- |
+| GET    | `/api/decks`            | List decks with progress summary   |
+| GET    | `/api/decks/{id}`       | Full deck with cards + progress    |
+| POST   | `/api/decks`            | Create a deck from raw markdown    |
+| PUT    | `/api/decks/{id}`       | Replace deck content (in-app edit) |
+| PUT    | `/api/decks/{id}/label` | Rename a deck                      |
+| PUT    | `/api/decks/{id}/progress` | Record session grades, reschedule |
+| DELETE | `/api/decks/{id}/progress` | Reset a deck's progress         |
+| DELETE | `/api/decks/{id}`       | Delete a deck                      |
+| GET    | `/api/activity`         | Study streak and today's count     |
 
 Swagger UI is at `/swagger-ui/index.html` on the backend.
+
+## Tests
+
+```bash
+cd backend  && mvn test    # JUnit: parser, scheduler, controller
+cd frontend && npm test    # Vitest: parser, stats / spaced repetition
+```
+
+CI runs both on every push and pull request (`.github/workflows/ci.yml`).
 
 ## Local development (without Docker)
 

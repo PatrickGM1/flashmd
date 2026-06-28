@@ -1,6 +1,7 @@
 package com.flashmd.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flashmd.model.Deck;
 import jakarta.annotation.PostConstruct;
@@ -25,7 +26,8 @@ public class DeckStore {
 
     private static final Logger log = LoggerFactory.getLogger(DeckStore.class);
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private final Map<String, Deck> decks = new LinkedHashMap<>();
     private final Path file;
 
