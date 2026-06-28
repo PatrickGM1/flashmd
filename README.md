@@ -4,11 +4,11 @@ Flash cards from .md file
 
 # flashmd
 
-Flashcards from a `.md` file. No account, no install — runs in the browser.
+Flashcards from a `.md` file.
 
 ## Usage
 
-- Upload a `.md` file, or load one from a URL: `?deck=<raw-url>`
+- Upload a `.md` file
 - Select chapters to study, or pick N random cards from the whole deck
 - Flip cards, mark known/unknown
 
