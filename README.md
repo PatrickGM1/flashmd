@@ -1,9 +1,5 @@
 # flashmd
 
-Flash cards from .md file
-
-# flashmd
-
 Flashcards from a `.md` file.
 
 ## Usage
