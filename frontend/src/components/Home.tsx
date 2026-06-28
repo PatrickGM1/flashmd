@@ -147,9 +147,9 @@ export default function Home({ onOpenDeck }: Props) {
           </Typography>
           <Box mt={1.5} display="flex" flexDirection="column" gap={1}>
             {decks.map(deck => {
-              const studied = deck.known + deck.unknown
-              const pct = studied > 0 ? Math.round((deck.known / deck.totalCards) * 100) : null
-              const barColor = pct === null ? '#3a3a40' : pct >= 80 ? '#66bb6a' : pct >= 50 ? '#ffa726' : '#ef5350'
+              const done = deck.known + deck.unknown
+              const donePct = deck.totalCards > 0 ? (done / deck.totalCards) * 100 : 0
+              const accColor = done === 0 ? '#3a3a40' : deck.known / done >= 0.8 ? '#66bb6a' : deck.known / done >= 0.5 ? '#ffa726' : '#ef5350'
 
               return (
                 <Box
@@ -168,10 +168,21 @@ export default function Home({ onOpenDeck }: Props) {
                     <Typography fontWeight={600} fontSize={14} color="text.primary" noWrap sx={{ mr: 2 }}>
                       {deck.label}
                     </Typography>
-                    <Box display="flex" alignItems="center" gap={1.5} flexShrink={0}>
-                      <Typography variant="caption" sx={{ color: barColor, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
-                        {pct === null ? `${deck.totalCards} cards` : `${deck.known}/${deck.totalCards}`}
-                      </Typography>
+                    <Box display="flex" alignItems="center" gap={1.5} flexShrink={0} sx={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {done === 0 ? (
+                        <Typography variant="caption" sx={{ color: '#666', fontWeight: 600 }}>
+                          {deck.totalCards} cards
+                        </Typography>
+                      ) : (
+                        <>
+                          <Typography variant="caption" sx={{ color: accColor, fontWeight: 700 }}>
+                            {deck.known}/{done} correct
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: '#666' }}>
+                            {done}/{deck.totalCards} done
+                          </Typography>
+                        </>
+                      )}
                       <DeleteOutlined
                         className="del"
                         onClick={e => remove(deck.id, e)}
@@ -181,10 +192,10 @@ export default function Home({ onOpenDeck }: Props) {
                   </Box>
                   <LinearProgress
                     variant="determinate"
-                    value={pct ?? 0}
+                    value={donePct}
                     sx={{
                       height: 3, borderRadius: 2, bgcolor: '#1c1c20',
-                      '& .MuiLinearProgress-bar': { bgcolor: barColor, borderRadius: 2 },
+                      '& .MuiLinearProgress-bar': { bgcolor: accColor, borderRadius: 2 },
                     }}
                   />
                 </Box>

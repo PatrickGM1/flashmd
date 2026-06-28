@@ -3,6 +3,7 @@ import { Box, Typography, Button, Checkbox, TextField, InputAdornment } from '@m
 import { ArrowBackOutlined, ReplayOutlined, PlayArrowRounded } from '@mui/icons-material'
 import { Deck, Card } from '../types'
 import { shuffleCards } from '../utils/parser'
+import { statsFor, accuracyColor } from '../utils/stats'
 import Shell, { Brand } from './Shell'
 
 interface Props {
@@ -18,8 +19,10 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
   const [randomCount, setRandomCount] = useState<string>('')
 
   const allCards = chapters.flatMap(ch => ch.cards)
+  const knownSet = new Set(progress?.known ?? [])
   const wrongSet = new Set(progress?.unknown ?? [])
   const wrongCards = allCards.filter(c => wrongSet.has(c.question))
+  const deckStat = statsFor(allCards, knownSet, wrongSet)
 
   const allSelected = selected.size === chapters.length
   const totalCards = chapters.filter((_, i) => selected.has(i)).reduce((s, ch) => s + ch.cards.length, 0)
@@ -53,9 +56,17 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
       right={<Brand />}
     >
       <Typography variant="h5" mb={0.5}>Study session</Typography>
-      <Typography variant="body2" color="text.secondary" mb={4}>
+      <Typography variant="body2" color="text.secondary" mb={3}>
         {allCards.length} cards across {chapters.length} chapters.
       </Typography>
+
+      {/* Deck totals */}
+      {deckStat.done > 0 && (
+        <Box display="flex" gap={1.5} mb={4}>
+          <StatTile label="Studied" value={`${deckStat.done}/${deckStat.total}`} color="#9a8cf9" />
+          <StatTile label="Correct" value={`${deckStat.correct}/${deckStat.done}`} color={accuracyColor(deckStat)} />
+        </Box>
+      )}
 
       {/* Wrong cards shortcut */}
       {wrongCards.length > 0 && (
@@ -103,6 +114,7 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
       <Box border="1px solid" borderColor="divider" borderRadius={2} overflow="hidden" mb={3}>
         {chapters.map((ch, i) => {
           const active = selected.has(i)
+          const stat = statsFor(ch.cards, knownSet, wrongSet)
           return (
             <Box
               key={i}
@@ -127,9 +139,20 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
               <Typography variant="body2" flex={1} color={active ? 'text.primary' : 'text.secondary'}>
                 {ch.title}
               </Typography>
-              <Typography variant="caption" color="#55555c" sx={{ fontVariantNumeric: 'tabular-nums' }}>
-                {ch.cards.length}
-              </Typography>
+              {stat.done > 0 ? (
+                <Box display="flex" alignItems="center" gap={1.25} sx={{ fontVariantNumeric: 'tabular-nums' }}>
+                  <Typography variant="caption" sx={{ color: accuracyColor(stat), fontWeight: 600 }}>
+                    {stat.correct}/{stat.done} correct
+                  </Typography>
+                  <Typography variant="caption" color="#55555c">
+                    {stat.done}/{stat.total} done
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography variant="caption" color="#55555c" sx={{ fontVariantNumeric: 'tabular-nums' }}>
+                  {ch.cards.length} cards
+                </Typography>
+              )}
             </Box>
           )
         })}
@@ -173,5 +196,25 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
         Start {totalCards} cards
       </Button>
     </Shell>
+  )
+}
+
+function StatTile({ label, value, color }: { label: string; value: string; color: string }) {
+  return (
+    <Box
+      flex={1}
+      border="1px solid"
+      borderColor="divider"
+      borderRadius={2}
+      px={2}
+      py={1.5}
+    >
+      <Typography variant="h6" sx={{ color, fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
+        {value}
+      </Typography>
+      <Typography variant="caption" color="text.secondary" sx={{ letterSpacing: '0.04em' }}>
+        {label}
+      </Typography>
+    </Box>
   )
 }
