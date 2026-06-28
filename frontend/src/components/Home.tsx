@@ -3,6 +3,7 @@ import { Box, Typography, Button, Alert, CircularProgress, LinearProgress } from
 import { DeleteOutlined, UploadFileOutlined } from '@mui/icons-material'
 import { Deck, DeckSummary } from '../types'
 import { listDecks, getDeck, createDeck, deleteDeck } from '../api'
+import { tile, accuracyColor } from '../ui'
 import Shell, { Brand } from './Shell'
 
 interface Props {
@@ -95,6 +96,14 @@ export default function Home({ onOpenDeck }: Props) {
         </Button>
       }
     >
+      {/* Heading */}
+      <Typography variant="h4" mb={0.5} sx={{ fontSize: { xs: '1.7rem', sm: '2rem' } }}>
+        Your decks
+      </Typography>
+      <Typography variant="body2" color="text.secondary" mb={3}>
+        Pick one to study, or add a new markdown file.
+      </Typography>
+
       {/* Drop zone */}
       <Box
         onClick={() => !busy && fileInputRef.current?.click()}
@@ -102,33 +111,35 @@ export default function Home({ onOpenDeck }: Props) {
         onDragOver={e => { e.preventDefault(); setDragging(true) }}
         onDragLeave={() => setDragging(false)}
         sx={{
-          border: '1px dashed',
-          borderColor: dragging ? 'primary.main' : '#2c2c30',
-          borderRadius: 2.5,
-          py: 6, px: 4,
+          display: 'flex', alignItems: 'center', gap: 2,
+          border: '2px dashed',
+          borderColor: dragging ? '#6b5ae0' : '#33333a',
+          borderRadius: '14px',
+          p: 2.5,
           cursor: busy ? 'default' : 'pointer',
-          textAlign: 'center',
           opacity: busy ? 0.6 : 1,
-          bgcolor: dragging ? 'rgba(124,106,247,0.06)' : 'rgba(255,255,255,0.012)',
-          transition: 'all 0.15s ease',
-          '&:hover': { borderColor: busy ? '#2c2c30' : '#7c6af7', bgcolor: busy ? undefined : 'rgba(124,106,247,0.04)' },
+          bgcolor: dragging ? 'rgba(124,106,247,0.05)' : 'transparent',
+          transition: 'border-color 0.15s ease, background 0.15s ease',
+          '&:hover': { borderColor: busy ? '#33333a' : '#4a4a54', bgcolor: busy ? undefined : 'rgba(255,255,255,0.012)' },
         }}
       >
         <Box
           sx={{
-            width: 44, height: 44, mx: 'auto', mb: 2, borderRadius: 2,
-            bgcolor: 'rgba(124,106,247,0.1)',
+            width: 46, height: 46, flexShrink: 0, borderRadius: '11px',
+            border: '1.5px solid #33333a',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
-          <UploadFileOutlined sx={{ color: 'primary.main', fontSize: 22 }} />
+          <UploadFileOutlined sx={{ color: '#7a7a84', fontSize: 22 }} />
         </Box>
-        <Typography fontWeight={600} fontSize={15} color="text.primary">
-          Drop a markdown file
-        </Typography>
-        <Typography variant="body2" color="text.secondary" mt={0.5}>
-          or click to browse
-        </Typography>
+        <Box>
+          <Typography fontWeight={600} fontSize={15} color="text.primary">
+            Drop a markdown file
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            or click to browse
+          </Typography>
+        </Box>
         <input ref={fileInputRef} type="file" accept=".md,text/plain" hidden
           onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f) }} />
       </Box>
@@ -141,36 +152,38 @@ export default function Home({ onOpenDeck }: Props) {
 
       {/* Decks */}
       {!loadingList && decks.length > 0 && (
-        <Box mt={5}>
-          <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: '0.1em', fontWeight: 600 }}>
-            Your decks
-          </Typography>
-          <Box mt={1.5} display="flex" flexDirection="column" gap={1}>
+        <Box mt={3}>
+          <Box display="flex" flexDirection="column" gap={1.25}>
             {decks.map(deck => {
               const done = deck.known + deck.unknown
               const donePct = deck.totalCards > 0 ? (done / deck.totalCards) * 100 : 0
-              const accColor = done === 0 ? '#3a3a40' : deck.known / done >= 0.8 ? '#66bb6a' : deck.known / done >= 0.5 ? '#ffa726' : '#ef5350'
+              const accColor = accuracyColor(deck.known, done)
 
               return (
                 <Box
                   key={deck.id}
                   onClick={() => open(deck.id)}
                   sx={{
-                    border: '1px solid', borderColor: 'divider', borderRadius: 2,
-                    px: 2, py: 1.75,
-                    cursor: 'pointer',
-                    transition: 'border-color 0.15s, background 0.15s',
-                    '&:hover': { borderColor: '#3a3548', bgcolor: 'rgba(255,255,255,0.015)' },
+                    ...tile,
+                    position: 'relative',
+                    pl: 2.75, pr: 2, py: 1.75,
+                    overflow: 'hidden',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute', left: 0, top: 0, bottom: 0, width: 4,
+                      bgcolor: accColor,
+                      opacity: done === 0 ? 0.5 : 1,
+                    },
                     '&:hover .del': { opacity: 1 },
                   }}
                 >
-                  <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
-                    <Typography fontWeight={600} fontSize={14} color="text.primary" noWrap sx={{ mr: 2 }}>
+                  <Box display="flex" alignItems="center" justifyContent="space-between" mb={1.25}>
+                    <Typography fontWeight={600} fontSize={15} color="text.primary" noWrap sx={{ mr: 2 }}>
                       {deck.label}
                     </Typography>
                     <Box display="flex" alignItems="center" gap={1.5} flexShrink={0} sx={{ fontVariantNumeric: 'tabular-nums' }}>
                       {done === 0 ? (
-                        <Typography variant="caption" sx={{ color: '#666', fontWeight: 600 }}>
+                        <Typography variant="caption" sx={{ color: '#777', fontWeight: 600 }}>
                           {deck.totalCards} cards
                         </Typography>
                       ) : (
@@ -178,7 +191,7 @@ export default function Home({ onOpenDeck }: Props) {
                           <Typography variant="caption" sx={{ color: accColor, fontWeight: 700 }}>
                             {deck.known}/{done} correct
                           </Typography>
-                          <Typography variant="caption" sx={{ color: '#666' }}>
+                          <Typography variant="caption" sx={{ color: '#6b6b73' }}>
                             {done}/{deck.totalCards} done
                           </Typography>
                         </>
@@ -186,7 +199,7 @@ export default function Home({ onOpenDeck }: Props) {
                       <DeleteOutlined
                         className="del"
                         onClick={e => remove(deck.id, e)}
-                        sx={{ fontSize: 15, color: '#444', opacity: 0, transition: 'opacity 0.15s, color 0.15s', '&:hover': { color: '#ef5350' } }}
+                        sx={{ fontSize: 16, color: '#4a4a52', opacity: { xs: 1, sm: 0 }, transition: 'opacity 0.15s, color 0.15s', '&:hover': { color: '#ef5e4e' } }}
                       />
                     </Box>
                   </Box>
@@ -194,8 +207,8 @@ export default function Home({ onOpenDeck }: Props) {
                     variant="determinate"
                     value={donePct}
                     sx={{
-                      height: 3, borderRadius: 2, bgcolor: '#1c1c20',
-                      '& .MuiLinearProgress-bar': { bgcolor: accColor, borderRadius: 2 },
+                      height: 5,
+                      '& .MuiLinearProgress-bar': { bgcolor: accColor },
                     }}
                   />
                 </Box>
