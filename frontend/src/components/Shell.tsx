@@ -22,19 +22,15 @@ export function Brand({ onClick }: { onClick?: () => void }) {
       }}
     >
       <Box
+        component="img"
+        src="/logo.svg"
+        alt=""
         className="mark"
         sx={{
-          width: 26, height: 26, borderRadius: '8px',
-          bgcolor: '#7c6af7',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transform: 'rotate(-6deg)',
+          width: 28, height: 28, display: 'block',
           transition: 'transform 0.18s ease',
-          fontFamily: '"Fredoka", sans-serif', fontWeight: 600, fontSize: 17, color: '#fff',
-          boxShadow: '0 2px 0 #4b3fad',
         }}
-      >
-        f
-      </Box>
+      />
       <Box sx={{ fontFamily: '"Fredoka", sans-serif', fontWeight: 600, fontSize: 19, letterSpacing: '-0.01em', color: '#ededed' }}>
         flash<span style={{ color: '#9a8cf9' }}>md</span>
       </Box>

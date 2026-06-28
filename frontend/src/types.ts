@@ -9,9 +9,14 @@ export interface Chapter {
   cards: Card[]
 }
 
+export interface CardState {
+  box: number
+  known: boolean
+  lastSeen: string
+}
+
 export interface Progress {
-  known: string[]
-  unknown: string[]
+  cards: Record<string, CardState>
   lastStudied: string | null
 }
 
@@ -28,10 +33,23 @@ export interface DeckSummary {
   totalCards: number
   known: number
   unknown: number
+  due: number
   lastStudied: string | null
+}
+
+export type Grade = 'AGAIN' | 'HARD' | 'GOOD' | 'EASY'
+
+export interface GradedCard {
+  card: Card
+  grade: Grade
 }
 
 export interface StudyResults {
   known: Card[]
   unknown: Card[]
+}
+
+export interface Activity {
+  streak: number
+  today: number
 }

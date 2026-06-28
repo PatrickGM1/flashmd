@@ -1,4 +1,4 @@
-import { Deck, DeckSummary, StudyResults } from './types'
+import { Activity, Deck, DeckSummary, Grade } from './types'
 
 const BASE = '/api/decks'
 
@@ -26,14 +26,31 @@ export function createDeck(label: string, content: string): Promise<Deck> {
   }).then(json<Deck>)
 }
 
-export function saveProgress(id: string, results: StudyResults): Promise<Deck> {
+export function updateDeck(id: string, label: string, content: string): Promise<Deck> {
+  return fetch(`${BASE}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label, content }),
+  }).then(json<Deck>)
+}
+
+export function saveGrades(id: string, grades: { question: string; grade: Grade }[]): Promise<Deck> {
   return fetch(`${BASE}/${id}/progress`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      known: results.known.map(c => c.question),
-      unknown: results.unknown.map(c => c.question),
-    }),
+    body: JSON.stringify({ grades }),
+  }).then(json<Deck>)
+}
+
+export function resetProgress(id: string): Promise<Deck> {
+  return fetch(`${BASE}/${id}/progress`, { method: 'DELETE' }).then(json<Deck>)
+}
+
+export function renameDeck(id: string, label: string): Promise<Deck> {
+  return fetch(`${BASE}/${id}/label`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label }),
   }).then(json<Deck>)
 }
 
@@ -41,4 +58,8 @@ export function deleteDeck(id: string): Promise<void> {
   return fetch(`${BASE}/${id}`, { method: 'DELETE' }).then(res => {
     if (!res.ok) throw new Error(`Delete failed (${res.status})`)
   })
+}
+
+export function getActivity(): Promise<Activity> {
+  return fetch('/api/activity').then(json<Activity>)
 }

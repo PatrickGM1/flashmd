@@ -1,31 +1,66 @@
 import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Button, Alert, CircularProgress, LinearProgress } from '@mui/material'
-import { DeleteOutlined, UploadFileOutlined } from '@mui/icons-material'
-import { Deck, DeckSummary } from '../types'
-import { listDecks, getDeck, createDeck, deleteDeck } from '../api'
+import { DeleteOutlined, UploadFileOutlined, DriveFileRenameOutlineOutlined, LocalFireDepartmentRounded, ReplayRounded } from '@mui/icons-material'
+import { Activity, Card, Deck, DeckSummary } from '../types'
+import { listDecks, getDeck, createDeck, deleteDeck, renameDeck, getActivity } from '../api'
 import { tile, accuracyColor } from '../ui'
+import { readProgress, orderForReview } from '../utils/stats'
 import Shell, { Brand } from './Shell'
 
 interface Props {
   onOpenDeck: (deck: Deck) => void
+  onStudyAll: (cards: Card[], deckMap: Map<Card, string>) => void
 }
 
-export default function Home({ onOpenDeck }: Props) {
+export default function Home({ onOpenDeck, onStudyAll }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [dragging, setDragging] = useState(false)
   const [decks, setDecks] = useState<DeckSummary[]>([])
   const [loadingList, setLoadingList] = useState(true)
+  const [activity, setActivity] = useState<Activity | null>(null)
 
   const refresh = () => {
     listDecks()
       .then(setDecks)
       .catch(() => setError('Cannot reach the server. Is the backend running on :8080?'))
       .finally(() => setLoadingList(false))
+    getActivity().then(setActivity).catch(() => {})
   }
 
   useEffect(refresh, [])
+
+  const totalDue = decks.reduce((s, d) => s + d.due, 0)
+
+  const studyAllDue = async () => {
+    setBusy(true)
+    try {
+      const cards: Card[] = []
+      const map = new Map<Card, string>()
+      for (const summary of decks) {
+        if (summary.due === 0) continue
+        const full = await getDeck(summary.id)
+        const { due } = readProgress(full.progress)
+        for (const ch of full.chapters) {
+          for (const c of ch.cards) {
+            if (due.has(c.question)) { cards.push(c); map.set(c, full.id) }
+          }
+        }
+      }
+      if (cards.length > 0) onStudyAll(orderForReview(cards, null), map)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const rename = async (id: string, current: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const name = window.prompt('Rename deck', current)
+    if (!name || name.trim() === current) return
+    setDecks(d => d.map(x => x.id === id ? { ...x, label: name.trim() } : x))
+    try { await renameDeck(id, name.trim()) } catch { refresh() }
+  }
 
   const upload = async (label: string, content: string) => {
     setBusy(true)
@@ -85,15 +120,30 @@ export default function Home({ onOpenDeck }: Props) {
     <Shell
       left={<Brand />}
       right={
-        <Button
-          size="small"
-          onClick={handleExample}
-          disabled={busy}
-          sx={{ color: 'text.secondary', fontSize: 13, '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
-        >
-          {busy ? <CircularProgress size={13} color="inherit" sx={{ mr: 1 }} /> : null}
-          Example
-        </Button>
+        <Box display="flex" alignItems="center" gap={1.5}>
+          {activity && activity.streak > 0 && (
+            <Box
+              title={`${activity.today} cards today`}
+              sx={{
+                display: 'flex', alignItems: 'center', gap: 0.4,
+                color: '#e8b13a', fontWeight: 700, fontSize: 13,
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              <LocalFireDepartmentRounded sx={{ fontSize: 17 }} />
+              {activity.streak}
+            </Box>
+          )}
+          <Button
+            size="small"
+            onClick={handleExample}
+            disabled={busy}
+            sx={{ color: 'text.secondary', fontSize: 13, '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
+          >
+            {busy ? <CircularProgress size={13} color="inherit" sx={{ mr: 1 }} /> : null}
+            Example
+          </Button>
+        </Box>
       }
     >
       {/* Heading */}
@@ -150,6 +200,25 @@ export default function Home({ onOpenDeck }: Props) {
         </Alert>
       )}
 
+      {/* Study all due */}
+      {totalDue > 0 && (
+        <Button
+          fullWidth
+          onClick={studyAllDue}
+          disabled={busy}
+          startIcon={<ReplayRounded />}
+          sx={{
+            mt: 3, py: 1.3, fontWeight: 600, fontSize: 15, borderRadius: '12px',
+            color: '#fff', bgcolor: '#7c6af7', boxShadow: '0 3px 0 #4b3fad',
+            '&:hover': { bgcolor: '#7c6af7', filter: 'brightness(1.08)', boxShadow: '0 3px 0 #4b3fad' },
+            '&:active': { transform: 'translateY(3px)', boxShadow: '0 0 0 #4b3fad' },
+            transition: 'transform 0.04s ease, box-shadow 0.04s ease, filter 0.12s',
+          }}
+        >
+          Study all due ({totalDue})
+        </Button>
+      )}
+
       {/* Decks */}
       {!loadingList && decks.length > 0 && (
         <Box mt={3}>
@@ -178,9 +247,23 @@ export default function Home({ onOpenDeck }: Props) {
                   }}
                 >
                   <Box display="flex" alignItems="center" justifyContent="space-between" mb={1.25}>
-                    <Typography fontWeight={600} fontSize={15} color="text.primary" noWrap sx={{ mr: 2 }}>
-                      {deck.label}
-                    </Typography>
+                    <Box display="flex" alignItems="center" gap={1} minWidth={0} mr={2}>
+                      <Typography fontWeight={600} fontSize={15} color="text.primary" noWrap>
+                        {deck.label}
+                      </Typography>
+                      {deck.due > 0 && (
+                        <Box
+                          sx={{
+                            flexShrink: 0,
+                            fontSize: 11, fontWeight: 700, lineHeight: 1,
+                            color: '#9a8cf9', px: 0.75, py: '3px', borderRadius: '6px',
+                            border: '1.5px solid #3a3460', bgcolor: 'rgba(124,106,247,0.1)',
+                          }}
+                        >
+                          {deck.due} due
+                        </Box>
+                      )}
+                    </Box>
                     <Box display="flex" alignItems="center" gap={1.5} flexShrink={0} sx={{ fontVariantNumeric: 'tabular-nums' }}>
                       {done === 0 ? (
                         <Typography variant="caption" sx={{ color: '#777', fontWeight: 600 }}>
@@ -196,11 +279,16 @@ export default function Home({ onOpenDeck }: Props) {
                           </Typography>
                         </>
                       )}
-                      <DeleteOutlined
-                        className="del"
-                        onClick={e => remove(deck.id, e)}
-                        sx={{ fontSize: 16, color: '#4a4a52', opacity: { xs: 1, sm: 0 }, transition: 'opacity 0.15s, color 0.15s', '&:hover': { color: '#ef5e4e' } }}
-                      />
+                      <Box className="del" display="flex" gap={0.75} sx={{ opacity: { xs: 1, sm: 0 }, transition: 'opacity 0.15s' }}>
+                        <DriveFileRenameOutlineOutlined
+                          onClick={e => rename(deck.id, deck.label, e)}
+                          sx={{ fontSize: 16, color: '#4a4a52', cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#9a8cf9' } }}
+                        />
+                        <DeleteOutlined
+                          onClick={e => remove(deck.id, e)}
+                          sx={{ fontSize: 16, color: '#4a4a52', cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#ef5e4e' } }}
+                        />
+                      </Box>
                     </Box>
                   </Box>
                   <LinearProgress

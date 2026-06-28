@@ -45,6 +45,18 @@ export function parseDeck(content: string): Chapter[] {
   return chapters.filter(ch => ch.cards.length > 0)
 }
 
+/** Reconstruct the markdown source from parsed chapters (for the editor). */
+export function toMarkdown(chapters: Chapter[]): string {
+  return chapters
+    .map(ch => {
+      const cards = ch.cards
+        .map(c => `## ${c.question}\n${c.answer}`)
+        .join('\n\n')
+      return `# ${ch.title}\n\n${cards}`
+    })
+    .join('\n\n')
+}
+
 export function shuffleCards(cards: Card[]): Card[] {
   const arr = [...cards]
   for (let i = arr.length - 1; i > 0; i--) {

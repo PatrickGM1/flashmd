@@ -1,9 +1,13 @@
 package com.flashmd.model;
 
-import java.util.List;
+import java.util.Map;
 
-public record Progress(List<String> known, List<String> unknown, String lastStudied) {
+public record Progress(Map<String, CardState> cards, String lastStudied) {
     public static Progress empty() {
-        return new Progress(List.of(), List.of(), null);
+        return new Progress(Map.of(), null);
+    }
+
+    public Map<String, CardState> cardsOrEmpty() {
+        return cards == null ? Map.of() : cards;
     }
 }
