@@ -1,8 +1,14 @@
-# flashmd
+<p align="center">
+  <img src="frontend/public/logo.svg" width="76" alt="flashmd logo" />
+</p>
 
-Flashcards from a plain markdown file. No account, no sync. Upload a `.md`,
-study, and the app remembers which cards you got wrong so you can drill them
-later.
+<h1 align="center">flashmd</h1>
+
+<p align="center">
+  Flashcards from a plain markdown file. No account, no sync. Upload a
+  <code>.md</code>, study, and the app remembers which cards you got wrong so
+  you can drill them later.
+</p>
 
 ## Features
 

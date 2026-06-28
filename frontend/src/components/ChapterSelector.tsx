@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Box, Typography, Button, Checkbox, TextField, InputAdornment } from '@mui/material'
-import { ArrowBackOutlined, ReplayOutlined, PlayArrowRounded } from '@mui/icons-material'
+import { ArrowBackOutlined, PlayArrowRounded, ReplayRounded } from '@mui/icons-material'
 import { Deck, Card } from '../types'
 import { shuffleCards } from '../utils/parser'
 import { statsFor, accuracyColor } from '../utils/stats'
+import { panel, tile } from '../ui'
 import Shell, { Brand } from './Shell'
 
 interface Props {
@@ -55,47 +56,57 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
       }
       right={<Brand />}
     >
-      <Typography variant="h5" mb={0.5}>Study session</Typography>
+      <Typography variant="h5" mb={0.5} noWrap>{deck.label}</Typography>
       <Typography variant="body2" color="text.secondary" mb={3}>
         {allCards.length} cards across {chapters.length} chapters.
       </Typography>
 
       {/* Deck totals */}
       {deckStat.done > 0 && (
-        <Box display="flex" gap={1.5} mb={4}>
+        <Box display="flex" gap={1.5} mb={3}>
           <StatTile label="Studied" value={`${deckStat.done}/${deckStat.total}`} color="#9a8cf9" />
           <StatTile label="Correct" value={`${deckStat.correct}/${deckStat.done}`} color={accuracyColor(deckStat)} />
         </Box>
       )}
 
-      {/* Wrong cards shortcut */}
+      {/* Review wrong cards */}
       {wrongCards.length > 0 && (
         <Box
           onClick={() => onStart(shuffleCards(wrongCards))}
           sx={{
-            mb: 4, p: 2, borderRadius: 2,
-            border: '1px solid rgba(239,83,80,0.22)',
-            bgcolor: 'rgba(239,83,80,0.05)',
-            cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            transition: 'background 0.15s',
-            '&:hover': { bgcolor: 'rgba(239,83,80,0.09)' },
+            ...tile,
+            mb: 4,
+            display: 'flex', alignItems: 'stretch', gap: 0,
+            p: 0,
+            overflow: 'hidden',
+            '&:hover': { borderColor: '#6a3f43' },
           }}
         >
-          <Box display="flex" alignItems="center" gap={1.5}>
-            <ReplayOutlined sx={{ color: '#ef5350', fontSize: 20 }} />
-            <Box>
-              <Typography variant="body2" fontWeight={600} color="#ef5350">
-                Review {wrongCards.length} wrong cards
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                from {progress?.lastStudied}
-              </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', px: 2, bgcolor: '#ef5e4e', color: '#1a0d0b' }}>
+            <ReplayRounded sx={{ fontSize: 24 }} />
+          </Box>
+          <Box flex={1} py={1.5} px={2}>
+            <Typography fontWeight={600} fontSize={14.5} color="text.primary">
+              Review the ones you missed
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              last studied {progress?.lastStudied}
+            </Typography>
+          </Box>
+          <Box display="flex" alignItems="center" pr={2}>
+            <Box
+              sx={{
+                fontFamily: '"IBM Plex Mono", monospace', fontWeight: 600, fontSize: 15,
+                color: '#ef5e4e', minWidth: 30, textAlign: 'center', py: 0.25, borderRadius: '7px',
+                border: '1.5px solid #45292a', bgcolor: 'rgba(239,94,78,0.08)',
+              }}
+            >
+              {wrongCards.length}
             </Box>
           </Box>
-          <ArrowBackOutlined sx={{ color: '#ef5350', fontSize: 16, transform: 'rotate(180deg)' }} />
         </Box>
       )}
+
 
       {/* Chapters */}
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={1.5}>
@@ -111,7 +122,7 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
         </Typography>
       </Box>
 
-      <Box border="1px solid" borderColor="divider" borderRadius={2} overflow="hidden" mb={3}>
+      <Box sx={{ ...panel, overflow: 'hidden', mb: 3 }}>
         {chapters.map((ch, i) => {
           const active = selected.has(i)
           const stat = statsFor(ch.cards, knownSet, wrongSet)
@@ -121,7 +132,7 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
               onClick={() => toggleChapter(i)}
               sx={{
                 display: 'flex', alignItems: 'center', px: 1.5, py: 1.25,
-                borderTop: i === 0 ? 'none' : '1px solid',
+                borderTop: i === 0 ? 'none' : '1.5px solid',
                 borderColor: 'divider',
                 cursor: 'pointer',
                 transition: 'background 0.1s',
@@ -132,10 +143,16 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
                 checked={active}
                 size="small"
                 disableRipple
-                sx={{ p: 0.5, mr: 1, color: '#383840', '&.Mui-checked': { color: 'primary.main' } }}
+                sx={{ p: 0.5, mr: 0.5, color: '#383840', '&.Mui-checked': { color: 'primary.main' } }}
                 onClick={e => e.stopPropagation()}
                 onChange={() => toggleChapter(i)}
               />
+              <Typography
+                component="span"
+                sx={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: 12, color: active ? '#9a8cf9' : '#46464c', width: 24, flexShrink: 0, fontWeight: 600 }}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </Typography>
               <Typography variant="body2" flex={1} color={active ? 'text.primary' : 'text.secondary'}>
                 {ch.title}
               </Typography>
@@ -174,14 +191,7 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
             </InputAdornment>
           ) : undefined,
         }}
-        sx={{
-          mb: 3,
-          '& .MuiOutlinedInput-root': {
-            bgcolor: 'rgba(255,255,255,0.015)',
-            '& fieldset': { borderColor: 'divider' },
-            '&:hover fieldset': { borderColor: '#7c6af7' },
-          },
-        }}
+        sx={{ mb: 3 }}
       />
 
       <Button
@@ -201,15 +211,13 @@ export default function ChapterSelector({ deck, onStart, onBack }: Props) {
 
 function StatTile({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <Box
-      flex={1}
-      border="1px solid"
-      borderColor="divider"
-      borderRadius={2}
-      px={2}
-      py={1.5}
-    >
-      <Typography variant="h6" sx={{ color, fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
+    <Box sx={{ ...panel, flex: 1, px: 2, py: 1.5 }}>
+      <Typography
+        sx={{
+          fontFamily: '"Fredoka", sans-serif', fontWeight: 600, fontSize: 22,
+          color, fontVariantNumeric: 'tabular-nums', lineHeight: 1.1,
+        }}
+      >
         {value}
       </Typography>
       <Typography variant="caption" color="text.secondary" sx={{ letterSpacing: '0.04em' }}>

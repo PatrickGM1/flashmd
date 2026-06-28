@@ -50,7 +50,7 @@ export default function StudySession({ cards, onDone, onBack }: Props) {
         variant="determinate"
         value={progress}
         sx={{
-          height: 2, bgcolor: 'transparent',
+          height: 4, borderRadius: 0,
           '& .MuiLinearProgress-bar': { bgcolor: '#7c6af7', transition: 'transform 0.3s ease' },
         }}
       />
@@ -75,60 +75,45 @@ export default function StudySession({ cards, onDone, onBack }: Props) {
             }}
           >
             {/* Front */}
-            <Face sx={{ bgcolor: '#141416', border: '1px solid #26262b' }}>
-              <Typography variant="h5" fontWeight={600} textAlign="center" color="text.primary" lineHeight={1.45} sx={{ letterSpacing: '-0.01em' }}>
+            <Face sx={{ bgcolor: '#141416', border: '1px solid #2a2a2e' }}>
+              <Box
+                aria-hidden
+                sx={{
+                  position: 'absolute', top: 14, left: 20,
+                  fontFamily: '"IBM Plex Mono", monospace', fontWeight: 600,
+                  fontSize: 56, lineHeight: 1, color: 'rgba(255,255,255,0.035)',
+                  fontVariantNumeric: 'tabular-nums', userSelect: 'none',
+                }}
+              >
+                {String(index + 1).padStart(2, '0')}
+              </Box>
+              <Typography variant="h5" fontWeight={600} textAlign="center" color="text.primary" lineHeight={1.45} sx={{ letterSpacing: '-0.01em', position: 'relative' }}>
                 {card.question}
               </Typography>
-              <Hint>tap to flip</Hint>
+              <Hint>click to flip</Hint>
             </Face>
             {/* Back */}
-            <Face
-              back
-              sx={{
-                bgcolor: '#13111d',
-                border: '1px solid #332c52',
-                boxShadow: '0 0 40px rgba(124,106,247,0.06)',
-              }}
-            >
-              <Typography variant="body1" textAlign="center" color="text.primary" lineHeight={1.75} sx={{ whiteSpace: 'pre-wrap', fontSize: 16 }}>
+            <Face back sx={{ bgcolor: '#101011', border: '1px solid #2a2a2e' }}>
+              <Typography variant="body1" textAlign="center" color="#cfcfd2" lineHeight={1.75} sx={{ whiteSpace: 'pre-wrap', fontSize: 16 }}>
                 {card.answer}
               </Typography>
+              <Hint>answer</Hint>
             </Face>
           </Box>
         </Box>
 
         {/* Actions */}
-        <Box display="flex" gap={1.5} width="100%" maxWidth={420}>
-          <Button
-            fullWidth
-            variant="outlined"
-            startIcon={<CloseRounded />}
-            onClick={() => advance(false)}
-            disabled={!flipped}
-            sx={{
-              py: 1.4, fontWeight: 600,
-              borderColor: '#26262b', color: '#6a6a72',
-              '&:not(:disabled):hover': { borderColor: '#ef5350', color: '#ef5350', bgcolor: 'rgba(239,83,80,0.06)' },
-              '&.Mui-disabled': { borderColor: '#1c1c20', color: '#333' },
-            }}
-          >
-            Missed
-          </Button>
-          <Button
-            fullWidth
-            variant="outlined"
-            startIcon={<CheckRounded />}
-            onClick={() => advance(true)}
-            disabled={!flipped}
-            sx={{
-              py: 1.4, fontWeight: 600,
-              borderColor: '#26262b', color: '#6a6a72',
-              '&:not(:disabled):hover': { borderColor: '#66bb6a', color: '#66bb6a', bgcolor: 'rgba(102,187,106,0.06)' },
-              '&.Mui-disabled': { borderColor: '#1c1c20', color: '#333' },
-            }}
-          >
-            Knew it
-          </Button>
+        <Box display="flex" gap={1.5} width="100%" maxWidth={440}>
+          <ActionButton
+            color="#ef5e4e" edge="#7a2e25"
+            icon={<CloseRounded />} label="Missed"
+            disabled={!flipped} onClick={() => advance(false)}
+          />
+          <ActionButton
+            color="#5fcf6a" edge="#2f6b34"
+            icon={<CheckRounded />} label="Knew it"
+            disabled={!flipped} onClick={() => advance(true)}
+          />
         </Box>
       </Box>
     </Shell>
@@ -142,7 +127,8 @@ function Face({ children, sx, back }: { children: React.ReactNode; sx?: object; 
         position: 'absolute', inset: 0,
         backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
         transform: back ? 'rotateY(180deg)' : 'none',
-        borderRadius: 3,
+        borderRadius: '18px',
+        boxShadow: '0 4px 0 rgba(0,0,0,0.5)',
         p: { xs: 3.5, sm: 5 },
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         ...sx,
@@ -150,6 +136,31 @@ function Face({ children, sx, back }: { children: React.ReactNode; sx?: object; 
     >
       {children}
     </Box>
+  )
+}
+
+function ActionButton({ color, edge, icon, label, disabled, onClick }: {
+  color: string; edge: string; icon: React.ReactNode; label: string; disabled: boolean; onClick: () => void
+}) {
+  return (
+    <Button
+      fullWidth
+      startIcon={icon}
+      onClick={onClick}
+      disabled={disabled}
+      sx={{
+        py: 1.4, fontWeight: 600, fontSize: 15, borderRadius: '12px',
+        color: '#fff',
+        bgcolor: color,
+        boxShadow: `0 3px 0 ${edge}`,
+        '&:hover': { bgcolor: color, filter: 'brightness(1.08)', boxShadow: `0 3px 0 ${edge}` },
+        '&:active': { transform: 'translateY(3px)', boxShadow: `0 0 0 ${edge}` },
+        '&.Mui-disabled': { bgcolor: '#1e1e22', color: '#3c3c44', boxShadow: 'none' },
+        transition: 'transform 0.04s ease, box-shadow 0.04s ease, filter 0.12s',
+      }}
+    >
+      {label}
+    </Button>
   )
 }
 

@@ -15,27 +15,48 @@ export function Brand({ onClick }: { onClick?: () => void }) {
     <Box
       onClick={onClick}
       sx={{
-        fontFamily: '"Space Grotesk", sans-serif', fontWeight: 600, fontSize: 16,
-        letterSpacing: '-0.02em', color: '#ededed',
+        display: 'inline-flex', alignItems: 'center', gap: 1,
         cursor: onClick ? 'pointer' : 'default',
         userSelect: 'none',
+        '&:hover .mark': onClick ? { transform: 'rotate(0deg)' } : {},
       }}
     >
-      flash<span style={{ color: '#9a8cf9' }}>md</span>
+      <Box
+        className="mark"
+        sx={{
+          width: 26, height: 26, borderRadius: '8px',
+          bgcolor: '#7c6af7',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transform: 'rotate(-6deg)',
+          transition: 'transform 0.18s ease',
+          fontFamily: '"Fredoka", sans-serif', fontWeight: 600, fontSize: 17, color: '#fff',
+          boxShadow: '0 2px 0 #4b3fad',
+        }}
+      >
+        f
+      </Box>
+      <Box sx={{ fontFamily: '"Fredoka", sans-serif', fontWeight: 600, fontSize: 19, letterSpacing: '-0.01em', color: '#ededed' }}>
+        flash<span style={{ color: '#9a8cf9' }}>md</span>
+      </Box>
     </Box>
   )
 }
 
 export default function Shell({ left, right, children, maxWidth = 'sm', fill }: Props) {
   return (
-    <Box minHeight="100vh" display="flex" flexDirection="column" bgcolor="background.default">
+    <Box
+      minHeight="100vh"
+      display="flex"
+      flexDirection="column"
+      bgcolor="background.default"
+    >
       {/* Top bar */}
       <Box
         component="header"
         sx={{
-          height: 56,
+          height: 60,
           flexShrink: 0,
-          borderBottom: '1px solid',
+          borderBottom: '1.5px solid',
           borderColor: 'divider',
           display: 'flex',
           alignItems: 'center',
@@ -44,8 +65,7 @@ export default function Shell({ left, right, children, maxWidth = 'sm', fill }: 
           position: 'sticky',
           top: 0,
           zIndex: 10,
-          bgcolor: 'rgba(12,12,13,0.85)',
-          backdropFilter: 'blur(8px)',
+          bgcolor: 'background.default',
         }}
       >
         <Box display="flex" alignItems="center" minWidth={0}>{left}</Box>
