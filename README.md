@@ -5,7 +5,7 @@
 <h1 align="center">flashmd</h1>
 
 <p align="center">
-  Flashcards from a plain markdown file. No account, no sync. Upload a
+  Flashcards from a plain markdown file. Upload a
   <code>.md</code>, study, and the app remembers which cards you got wrong so
   you can drill them later.
 </p>
@@ -26,12 +26,12 @@
 
 ### Keyboard shortcuts (during study)
 
-| Key             | Action                       |
-| --------------- | ---------------------------- |
-| `Space`/`Enter` | Flip card                    |
+| Key             | Action                           |
+| --------------- | -------------------------------- |
+| `Space`/`Enter` | Flip card                        |
 | `1` `2` `3` `4` | Grade Again / Hard / Good / Easy |
-| `U`/`Backspace` | Undo last grade              |
-| `Esc`           | Quit session                 |
+| `U`/`Backspace` | Undo last grade                  |
+| `Esc`           | Quit session                     |
 
 ## Quick start (Docker)
 
@@ -98,17 +98,17 @@ frontend needs the backend running to load, save, or list decks.
 
 ### REST API (`/api/decks`)
 
-| Method | Path                    | Purpose                            |
-| ------ | ----------------------- | ---------------------------------- |
-| GET    | `/api/decks`            | List decks with progress summary   |
-| GET    | `/api/decks/{id}`       | Full deck with cards + progress    |
-| POST   | `/api/decks`            | Create a deck from raw markdown    |
-| PUT    | `/api/decks/{id}`       | Replace deck content (in-app edit) |
-| PUT    | `/api/decks/{id}/label` | Rename a deck                      |
-| PUT    | `/api/decks/{id}/progress` | Record session grades, reschedule |
-| DELETE | `/api/decks/{id}/progress` | Reset a deck's progress         |
-| DELETE | `/api/decks/{id}`       | Delete a deck                      |
-| GET    | `/api/activity`         | Study streak and today's count     |
+| Method | Path                       | Purpose                            |
+| ------ | -------------------------- | ---------------------------------- |
+| GET    | `/api/decks`               | List decks with progress summary   |
+| GET    | `/api/decks/{id}`          | Full deck with cards + progress    |
+| POST   | `/api/decks`               | Create a deck from raw markdown    |
+| PUT    | `/api/decks/{id}`          | Replace deck content (in-app edit) |
+| PUT    | `/api/decks/{id}/label`    | Rename a deck                      |
+| PUT    | `/api/decks/{id}/progress` | Record session grades, reschedule  |
+| DELETE | `/api/decks/{id}/progress` | Reset a deck's progress            |
+| DELETE | `/api/decks/{id}`          | Delete a deck                      |
+| GET    | `/api/activity`            | Study streak and today's count     |
 
 Swagger UI is at `/swagger-ui/index.html` on the backend.
 

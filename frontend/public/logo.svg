@@ -1,27 +1,30 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- back card of the stack -->
-  <rect x="7" y="16" width="35" height="34" rx="8" fill="#121217" stroke="#34343d" stroke-width="2.5"
-        transform="rotate(-8 24 33)"/>
+  <!-- flashmd: a pair of playing cards; the back card wears a Bicycle-blue lattice,
+       the front card's suit is a lightning bolt -->
+  <defs>
+    <pattern id="lattice" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M0 3H6M3 0V6" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+    </pattern>
+    <clipPath id="backclip"><rect x="14.5" y="10.5" width="27" height="37" rx="2"/></clipPath>
+  </defs>
 
-  <!-- front card -->
-  <rect x="10" y="19" width="35" height="34" rx="8" fill="#191920" stroke="#48484f" stroke-width="2.5"/>
-  <!-- title line + divider rule + body lines (flashcard ruling) -->
-  <rect x="16" y="27" width="15" height="3.6" rx="1.8" fill="#6a6a78"/>
-  <rect x="16" y="35" width="23" height="1.6" rx="0.8" fill="#2f2f38"/>
-  <rect x="16" y="41" width="22" height="3.2" rx="1.6" fill="#45454f"/>
-  <rect x="16" y="47" width="14" height="3.2" rx="1.6" fill="#3a3a43"/>
-
-  <!-- tilted light bulb bursting from the top-right -->
-  <g transform="translate(46 15) rotate(20)">
-    <rect x="-5" y="10.5" width="10" height="9" rx="2" fill="#4b3fad"/>
-    <line x1="-5" y1="13.3" x2="5" y2="13.3" stroke="#2b2552" stroke-width="1.5"/>
-    <line x1="-5" y1="16.1" x2="5" y2="16.1" stroke="#2b2552" stroke-width="1.5"/>
-    <rect x="-5.5" y="7.5" width="11" height="4.5" fill="#5a49c0"/>
-    <circle cx="0" cy="-1" r="11.5" fill="#7c6af7"/>
-    <path d="M-3.5 -5 L0.5 -1.5 L-1.5 -1.5 L3 3.5" fill="none"
-          stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- back card, fanned behind -->
+  <g transform="rotate(-14 28 31)">
+    <rect x="11" y="7" width="34" height="44" rx="4" fill="#ffffff"/>
+    <rect x="11" y="7" width="34" height="44" rx="4" stroke="#0d3b8f" stroke-width="1.5" opacity="0.35"/>
+    <rect x="14.5" y="10.5" width="27" height="37" rx="2" fill="#0d3b8f"/>
+    <rect x="14.5" y="10.5" width="27" height="37" rx="2" fill="url(#lattice)" clip-path="url(#backclip)"/>
+    <rect x="14.5" y="10.5" width="27" height="37" rx="2" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
   </g>
 
-  <!-- idea sparkle -->
-  <path d="M59 7 Q59 10.3 62.3 10.3 Q59 10.3 59 13.6 Q59 10.3 55.7 10.3 Q59 10.3 59 7 Z" fill="#9a8cf9"/>
+  <!-- front card -->
+  <g transform="rotate(6 36 36)">
+    <rect x="19" y="13" width="34" height="44" rx="4" fill="#ffffff"/>
+    <rect x="19.75" y="13.75" width="32.5" height="42.5" rx="3.25" stroke="#c8102e" stroke-width="1.5" opacity="0.25"/>
+    <!-- corner indices: the flash -->
+    <path d="M25 18.5 L22.6 24.2 H24.7 L23.4 28.6 L27.5 22.2 H25.3 L26.6 18.5 Z" fill="#c8102e"/>
+    <path d="M47 51.5 L49.4 45.8 H47.3 L48.6 41.4 L44.5 47.8 H46.7 L45.4 51.5 Z" fill="#c8102e"/>
+    <!-- center pip -->
+    <path d="M38.5 24 L31 37.5 H36.3 L33.4 47 L44.5 32.5 H38.9 L41.5 24 Z" fill="#c8102e"/>
+  </g>
 </svg>

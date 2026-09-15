@@ -1,0 +1,803 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-15T08:30:33Z",
+  "title": "Design System: flashmd",
+  "extensions": {
+    "colorMeta": {
+      "bicycle-blue": {
+        "role": "primary",
+        "displayName": "Bicycle Blue",
+        "canonical": "oklch(38.0% 0.148 261)",
+        "tonalRamp": [
+          "oklch(15% 0.148 261)",
+          "oklch(25% 0.148 261)",
+          "oklch(35% 0.148 261)",
+          "oklch(45% 0.148 261)",
+          "oklch(55% 0.148 261)",
+          "oklch(65% 0.148 261)",
+          "oklch(80% 0.148 261)",
+          "oklch(95% 0.148 261)"
+        ]
+      },
+      "bicycle-blue-hover": {
+        "role": "primary",
+        "displayName": "Bicycle Blue Hover",
+        "canonical": "oklch(44.0% 0.168 261)",
+        "tonalRamp": [
+          "oklch(15% 0.160 261)",
+          "oklch(25% 0.168 261)",
+          "oklch(35% 0.168 261)",
+          "oklch(45% 0.168 261)",
+          "oklch(55% 0.168 261)",
+          "oklch(65% 0.168 261)",
+          "oklch(80% 0.168 261)",
+          "oklch(95% 0.160 261)"
+        ]
+      },
+      "bicycle-blue-edge": {
+        "role": "primary",
+        "displayName": "Bicycle Blue Edge",
+        "canonical": "oklch(28.6% 0.111 262)",
+        "tonalRamp": [
+          "oklch(15% 0.111 262)",
+          "oklch(25% 0.111 262)",
+          "oklch(35% 0.111 262)",
+          "oklch(45% 0.111 262)",
+          "oklch(55% 0.111 262)",
+          "oklch(65% 0.111 262)",
+          "oklch(80% 0.111 262)",
+          "oklch(95% 0.111 262)"
+        ]
+      },
+      "bicycle-red": {
+        "role": "primary",
+        "displayName": "Bicycle Red",
+        "canonical": "oklch(53.0% 0.207 22)",
+        "tonalRamp": [
+          "oklch(15% 0.160 22)",
+          "oklch(25% 0.207 22)",
+          "oklch(35% 0.207 22)",
+          "oklch(45% 0.207 22)",
+          "oklch(55% 0.207 22)",
+          "oklch(65% 0.207 22)",
+          "oklch(80% 0.207 22)",
+          "oklch(95% 0.160 22)"
+        ]
+      },
+      "bicycle-red-edge": {
+        "role": "primary",
+        "displayName": "Bicycle Red Edge",
+        "canonical": "oklch(38.2% 0.147 21)",
+        "tonalRamp": [
+          "oklch(15% 0.147 21)",
+          "oklch(25% 0.147 21)",
+          "oklch(35% 0.147 21)",
+          "oklch(45% 0.147 21)",
+          "oklch(55% 0.147 21)",
+          "oklch(65% 0.147 21)",
+          "oklch(80% 0.147 21)",
+          "oklch(95% 0.147 21)"
+        ]
+      },
+      "grade-again": {
+        "role": "secondary",
+        "displayName": "Grade Again",
+        "canonical": "oklch(53.0% 0.207 22)",
+        "tonalRamp": [
+          "oklch(15% 0.160 22)",
+          "oklch(25% 0.207 22)",
+          "oklch(35% 0.207 22)",
+          "oklch(45% 0.207 22)",
+          "oklch(55% 0.207 22)",
+          "oklch(65% 0.207 22)",
+          "oklch(80% 0.207 22)",
+          "oklch(95% 0.160 22)"
+        ]
+      },
+      "grade-hard": {
+        "role": "secondary",
+        "displayName": "Grade Hard",
+        "canonical": "oklch(67.3% 0.154 60)",
+        "tonalRamp": [
+          "oklch(15% 0.154 60)",
+          "oklch(25% 0.154 60)",
+          "oklch(35% 0.154 60)",
+          "oklch(45% 0.154 60)",
+          "oklch(55% 0.154 60)",
+          "oklch(65% 0.154 60)",
+          "oklch(80% 0.154 60)",
+          "oklch(95% 0.154 60)"
+        ]
+      },
+      "grade-good": {
+        "role": "secondary",
+        "displayName": "Grade Good",
+        "canonical": "oklch(56.0% 0.134 153)",
+        "tonalRamp": [
+          "oklch(15% 0.134 153)",
+          "oklch(25% 0.134 153)",
+          "oklch(35% 0.134 153)",
+          "oklch(45% 0.134 153)",
+          "oklch(55% 0.134 153)",
+          "oklch(65% 0.134 153)",
+          "oklch(80% 0.134 153)",
+          "oklch(95% 0.134 153)"
+        ]
+      },
+      "grade-easy": {
+        "role": "secondary",
+        "displayName": "Grade Easy",
+        "canonical": "oklch(38.0% 0.148 261)",
+        "tonalRamp": [
+          "oklch(15% 0.148 261)",
+          "oklch(25% 0.148 261)",
+          "oklch(35% 0.148 261)",
+          "oklch(45% 0.148 261)",
+          "oklch(55% 0.148 261)",
+          "oklch(65% 0.148 261)",
+          "oklch(80% 0.148 261)",
+          "oklch(95% 0.148 261)"
+        ]
+      },
+      "grade-again-edge": {
+        "role": "secondary",
+        "displayName": "Grade Again Edge",
+        "canonical": "oklch(38.2% 0.147 21)",
+        "tonalRamp": [
+          "oklch(15% 0.147 21)",
+          "oklch(25% 0.147 21)",
+          "oklch(35% 0.147 21)",
+          "oklch(45% 0.147 21)",
+          "oklch(55% 0.147 21)",
+          "oklch(65% 0.147 21)",
+          "oklch(80% 0.147 21)",
+          "oklch(95% 0.147 21)"
+        ]
+      },
+      "grade-hard-edge": {
+        "role": "secondary",
+        "displayName": "Grade Hard Edge",
+        "canonical": "oklch(48.1% 0.110 59)",
+        "tonalRamp": [
+          "oklch(15% 0.110 59)",
+          "oklch(25% 0.110 59)",
+          "oklch(35% 0.110 59)",
+          "oklch(45% 0.110 59)",
+          "oklch(55% 0.110 59)",
+          "oklch(65% 0.110 59)",
+          "oklch(80% 0.110 59)",
+          "oklch(95% 0.110 59)"
+        ]
+      },
+      "grade-good-edge": {
+        "role": "secondary",
+        "displayName": "Grade Good Edge",
+        "canonical": "oklch(39.6% 0.089 154)",
+        "tonalRamp": [
+          "oklch(15% 0.089 154)",
+          "oklch(25% 0.089 154)",
+          "oklch(35% 0.089 154)",
+          "oklch(45% 0.089 154)",
+          "oklch(55% 0.089 154)",
+          "oklch(65% 0.089 154)",
+          "oklch(80% 0.089 154)",
+          "oklch(95% 0.089 154)"
+        ]
+      },
+      "grade-easy-edge": {
+        "role": "secondary",
+        "displayName": "Grade Easy Edge",
+        "canonical": "oklch(28.6% 0.111 262)",
+        "tonalRamp": [
+          "oklch(15% 0.111 262)",
+          "oklch(25% 0.111 262)",
+          "oklch(35% 0.111 262)",
+          "oklch(45% 0.111 262)",
+          "oklch(55% 0.111 262)",
+          "oklch(65% 0.111 262)",
+          "oklch(80% 0.111 262)",
+          "oklch(95% 0.111 262)"
+        ]
+      },
+      "card-stock": {
+        "role": "neutral",
+        "displayName": "Card Stock",
+        "canonical": "oklch(97.9% 0.007 89)",
+        "tonalRamp": [
+          "oklch(15% 0.007 89)",
+          "oklch(25% 0.007 89)",
+          "oklch(35% 0.007 89)",
+          "oklch(45% 0.007 89)",
+          "oklch(55% 0.007 89)",
+          "oklch(65% 0.007 89)",
+          "oklch(80% 0.007 89)",
+          "oklch(95% 0.007 89)"
+        ]
+      },
+      "card-ink": {
+        "role": "neutral",
+        "displayName": "Card Ink",
+        "canonical": "oklch(20.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(25% 0.000 90)",
+          "oklch(35% 0.000 90)",
+          "oklch(45% 0.000 90)",
+          "oklch(55% 0.000 90)",
+          "oklch(65% 0.000 90)",
+          "oklch(80% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "card-ink-muted": {
+        "role": "neutral",
+        "displayName": "Card Ink Muted",
+        "canonical": "oklch(48.5% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(25% 0.000 90)",
+          "oklch(35% 0.000 90)",
+          "oklch(45% 0.000 90)",
+          "oklch(55% 0.000 90)",
+          "oklch(65% 0.000 90)",
+          "oklch(80% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "card-rule": {
+        "role": "neutral",
+        "displayName": "Card Rule",
+        "canonical": "oklch(88.3% 0.013 87)",
+        "tonalRamp": [
+          "oklch(15% 0.013 87)",
+          "oklch(25% 0.013 87)",
+          "oklch(35% 0.013 87)",
+          "oklch(45% 0.013 87)",
+          "oklch(55% 0.013 87)",
+          "oklch(65% 0.013 87)",
+          "oklch(80% 0.013 87)",
+          "oklch(95% 0.013 87)"
+        ]
+      },
+      "chip-print": {
+        "role": "neutral",
+        "displayName": "Chip Print",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(25% 0.000 90)",
+          "oklch(35% 0.000 90)",
+          "oklch(45% 0.000 90)",
+          "oklch(55% 0.000 90)",
+          "oklch(65% 0.000 90)",
+          "oklch(80% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "day-baize": {
+        "role": "neutral",
+        "displayName": "Day Baize",
+        "canonical": "oklch(87.2% 0.036 140)",
+        "tonalRamp": [
+          "oklch(15% 0.036 140)",
+          "oklch(25% 0.036 140)",
+          "oklch(35% 0.036 140)",
+          "oklch(45% 0.036 140)",
+          "oklch(55% 0.036 140)",
+          "oklch(65% 0.036 140)",
+          "oklch(80% 0.036 140)",
+          "oklch(95% 0.036 140)"
+        ]
+      },
+      "day-text": {
+        "role": "neutral",
+        "displayName": "Day Text",
+        "canonical": "oklch(28.1% 0.047 155)",
+        "tonalRamp": [
+          "oklch(15% 0.047 155)",
+          "oklch(25% 0.047 155)",
+          "oklch(35% 0.047 155)",
+          "oklch(45% 0.047 155)",
+          "oklch(55% 0.047 155)",
+          "oklch(65% 0.047 155)",
+          "oklch(80% 0.047 155)",
+          "oklch(95% 0.047 155)"
+        ]
+      },
+      "day-muted": {
+        "role": "neutral",
+        "displayName": "Day Muted",
+        "canonical": "oklch(43.9% 0.046 154)",
+        "tonalRamp": [
+          "oklch(15% 0.046 154)",
+          "oklch(25% 0.046 154)",
+          "oklch(35% 0.046 154)",
+          "oklch(45% 0.046 154)",
+          "oklch(55% 0.046 154)",
+          "oklch(65% 0.046 154)",
+          "oklch(80% 0.046 154)",
+          "oklch(95% 0.046 154)"
+        ]
+      },
+      "day-rule": {
+        "role": "neutral",
+        "displayName": "Day Rule",
+        "canonical": "oklch(78.1% 0.044 141)",
+        "tonalRamp": [
+          "oklch(15% 0.044 141)",
+          "oklch(25% 0.044 141)",
+          "oklch(35% 0.044 141)",
+          "oklch(45% 0.044 141)",
+          "oklch(55% 0.044 141)",
+          "oklch(65% 0.044 141)",
+          "oklch(80% 0.044 141)",
+          "oklch(95% 0.044 141)"
+        ]
+      },
+      "day-hover": {
+        "role": "neutral",
+        "displayName": "Day Hover",
+        "canonical": "rgba(20,48,31,0.06)"
+      },
+      "day-focus": {
+        "role": "neutral",
+        "displayName": "Day Focus",
+        "canonical": "oklch(38.0% 0.148 261)",
+        "tonalRamp": [
+          "oklch(15% 0.148 261)",
+          "oklch(25% 0.148 261)",
+          "oklch(35% 0.148 261)",
+          "oklch(45% 0.148 261)",
+          "oklch(55% 0.148 261)",
+          "oklch(65% 0.148 261)",
+          "oklch(80% 0.148 261)",
+          "oklch(95% 0.148 261)"
+        ]
+      },
+      "day-blue-text": {
+        "role": "neutral",
+        "displayName": "Day Blue Text",
+        "canonical": "oklch(38.0% 0.148 261)",
+        "tonalRamp": [
+          "oklch(15% 0.148 261)",
+          "oklch(25% 0.148 261)",
+          "oklch(35% 0.148 261)",
+          "oklch(45% 0.148 261)",
+          "oklch(55% 0.148 261)",
+          "oklch(65% 0.148 261)",
+          "oklch(80% 0.148 261)",
+          "oklch(95% 0.148 261)"
+        ]
+      },
+      "day-red-text": {
+        "role": "neutral",
+        "displayName": "Day Red Text",
+        "canonical": "oklch(46.2% 0.180 22)",
+        "tonalRamp": [
+          "oklch(15% 0.160 22)",
+          "oklch(25% 0.180 22)",
+          "oklch(35% 0.180 22)",
+          "oklch(45% 0.180 22)",
+          "oklch(55% 0.180 22)",
+          "oklch(65% 0.180 22)",
+          "oklch(80% 0.180 22)",
+          "oklch(95% 0.160 22)"
+        ]
+      },
+      "day-good-text": {
+        "role": "neutral",
+        "displayName": "Day Good Text",
+        "canonical": "oklch(47.8% 0.108 153)",
+        "tonalRamp": [
+          "oklch(15% 0.108 153)",
+          "oklch(25% 0.108 153)",
+          "oklch(35% 0.108 153)",
+          "oklch(45% 0.108 153)",
+          "oklch(55% 0.108 153)",
+          "oklch(65% 0.108 153)",
+          "oklch(80% 0.108 153)",
+          "oklch(95% 0.108 153)"
+        ]
+      },
+      "day-hard-text": {
+        "role": "neutral",
+        "displayName": "Day Hard Text",
+        "canonical": "oklch(51.9% 0.120 59)",
+        "tonalRamp": [
+          "oklch(15% 0.120 59)",
+          "oklch(25% 0.120 59)",
+          "oklch(35% 0.120 59)",
+          "oklch(45% 0.120 59)",
+          "oklch(55% 0.120 59)",
+          "oklch(65% 0.120 59)",
+          "oklch(80% 0.120 59)",
+          "oklch(95% 0.120 59)"
+        ]
+      },
+      "night-baize": {
+        "role": "neutral",
+        "displayName": "Night Baize",
+        "canonical": "oklch(30.2% 0.049 162)",
+        "tonalRamp": [
+          "oklch(15% 0.049 162)",
+          "oklch(25% 0.049 162)",
+          "oklch(35% 0.049 162)",
+          "oklch(45% 0.049 162)",
+          "oklch(55% 0.049 162)",
+          "oklch(65% 0.049 162)",
+          "oklch(80% 0.049 162)",
+          "oklch(95% 0.049 162)"
+        ]
+      },
+      "night-text": {
+        "role": "neutral",
+        "displayName": "Night Text",
+        "canonical": "oklch(92.1% 0.018 93)",
+        "tonalRamp": [
+          "oklch(15% 0.018 93)",
+          "oklch(25% 0.018 93)",
+          "oklch(35% 0.018 93)",
+          "oklch(45% 0.018 93)",
+          "oklch(55% 0.018 93)",
+          "oklch(65% 0.018 93)",
+          "oklch(80% 0.018 93)",
+          "oklch(95% 0.018 93)"
+        ]
+      },
+      "night-muted": {
+        "role": "neutral",
+        "displayName": "Night Muted",
+        "canonical": "oklch(77.6% 0.029 155)",
+        "tonalRamp": [
+          "oklch(15% 0.029 155)",
+          "oklch(25% 0.029 155)",
+          "oklch(35% 0.029 155)",
+          "oklch(45% 0.029 155)",
+          "oklch(55% 0.029 155)",
+          "oklch(65% 0.029 155)",
+          "oklch(80% 0.029 155)",
+          "oklch(95% 0.029 155)"
+        ]
+      },
+      "night-rule": {
+        "role": "neutral",
+        "displayName": "Night Rule",
+        "canonical": "oklch(41.2% 0.060 160)",
+        "tonalRamp": [
+          "oklch(15% 0.060 160)",
+          "oklch(25% 0.060 160)",
+          "oklch(35% 0.060 160)",
+          "oklch(45% 0.060 160)",
+          "oklch(55% 0.060 160)",
+          "oklch(65% 0.060 160)",
+          "oklch(80% 0.060 160)",
+          "oklch(95% 0.060 160)"
+        ]
+      },
+      "night-hover": {
+        "role": "neutral",
+        "displayName": "Night Hover",
+        "canonical": "rgba(245,242,234,0.08)"
+      },
+      "night-focus": {
+        "role": "neutral",
+        "displayName": "Night Focus",
+        "canonical": "oklch(80.6% 0.098 262)",
+        "tonalRamp": [
+          "oklch(15% 0.098 262)",
+          "oklch(25% 0.098 262)",
+          "oklch(35% 0.098 262)",
+          "oklch(45% 0.098 262)",
+          "oklch(55% 0.098 262)",
+          "oklch(65% 0.098 262)",
+          "oklch(80% 0.098 262)",
+          "oklch(95% 0.098 262)"
+        ]
+      },
+      "night-blue-text": {
+        "role": "neutral",
+        "displayName": "Night Blue Text",
+        "canonical": "oklch(80.6% 0.098 262)",
+        "tonalRamp": [
+          "oklch(15% 0.098 262)",
+          "oklch(25% 0.098 262)",
+          "oklch(35% 0.098 262)",
+          "oklch(45% 0.098 262)",
+          "oklch(55% 0.098 262)",
+          "oklch(65% 0.098 262)",
+          "oklch(80% 0.098 262)",
+          "oklch(95% 0.098 262)"
+        ]
+      },
+      "night-red-text": {
+        "role": "neutral",
+        "displayName": "Night Red Text",
+        "canonical": "oklch(76.4% 0.142 15)",
+        "tonalRamp": [
+          "oklch(15% 0.142 15)",
+          "oklch(25% 0.142 15)",
+          "oklch(35% 0.142 15)",
+          "oklch(45% 0.142 15)",
+          "oklch(55% 0.142 15)",
+          "oklch(65% 0.142 15)",
+          "oklch(80% 0.142 15)",
+          "oklch(95% 0.142 15)"
+        ]
+      },
+      "night-good-text": {
+        "role": "neutral",
+        "displayName": "Night Good Text",
+        "canonical": "oklch(80.5% 0.119 153)",
+        "tonalRamp": [
+          "oklch(15% 0.119 153)",
+          "oklch(25% 0.119 153)",
+          "oklch(35% 0.119 153)",
+          "oklch(45% 0.119 153)",
+          "oklch(55% 0.119 153)",
+          "oklch(65% 0.119 153)",
+          "oklch(80% 0.119 153)",
+          "oklch(95% 0.119 153)"
+        ]
+      },
+      "night-hard-text": {
+        "role": "neutral",
+        "displayName": "Night Hard Text",
+        "canonical": "oklch(78.9% 0.132 68)",
+        "tonalRamp": [
+          "oklch(15% 0.132 68)",
+          "oklch(25% 0.132 68)",
+          "oklch(35% 0.132 68)",
+          "oklch(45% 0.132 68)",
+          "oklch(55% 0.132 68)",
+          "oklch(65% 0.132 68)",
+          "oklch(80% 0.132 68)",
+          "oklch(95% 0.132 68)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The one view title per screen, Barlow Condensed 600."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section heads on the table and deck names on list cards."
+      },
+      "index": {
+        "displayName": "Index",
+        "purpose": "Corner ranks and every counting numeral; tabular Barlow Condensed 700."
+      },
+      "question": {
+        "displayName": "Question",
+        "purpose": "The centered prompt on a card face, balanced wrapping."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "List rows and answer prose on card stock."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Chip captions, accuracy lines, small buttons; sentence case."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Deck source editor and inline code."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-rest",
+        "value": "0 1px 0 rgba(0,0,0,0.12), 0 8px 18px -6px rgba(0,0,0,0.28)",
+        "purpose": "Every face-up card, list card, tally pad, and card back."
+      },
+      {
+        "name": "card-lifted",
+        "value": "0 1px 0 rgba(0,0,0,0.12), 0 14px 24px -8px rgba(0,0,0,0.35)",
+        "purpose": "Hover on a clickable card (deck back, chapter card)."
+      },
+      {
+        "name": "mini-deck",
+        "value": "0 1px 0 rgba(0,0,0,0.12), 0 3px 6px -2px rgba(0,0,0,0.25)",
+        "purpose": "The small face-down pile the next card is dealt from."
+      },
+      {
+        "name": "chip-edge",
+        "value": "0 3px 0 {edge}, 0 6px 10px -4px rgba(0,0,0,0.35)",
+        "purpose": "Chip thickness in its own darker edge ink; pressed becomes 0 0 0 {edge}, 0 2px 4px -2px rgba(0,0,0,0.35)."
+      },
+      {
+        "name": "button-edge",
+        "value": "0 2px 0 #082560",
+        "purpose": "Contained button edge; collapses to 0 0 0 on press."
+      }
+    ],
+    "motion": [
+      {
+        "name": "deal",
+        "value": "260ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "purpose": "@keyframes deal: translateY(-64px) scale(0.6) rotate(-2deg) opacity 0 to rest, on each new card."
+      },
+      {
+        "name": "flip",
+        "value": "450ms cubic-bezier(0.4, 0.1, 0.2, 1)",
+        "purpose": "Whole-card rotateY(180deg) with perspective 1600px."
+      },
+      {
+        "name": "chips-in",
+        "value": "180ms cubic-bezier(0.2, 0.8, 0.2, 1) / 150ms ease",
+        "purpose": "Grade chips translate up 14px and fade in after the flip."
+      },
+      {
+        "name": "press",
+        "value": "60ms ease",
+        "purpose": "Chip and button transform + edge collapse."
+      },
+      {
+        "name": "lift",
+        "value": "150ms ease",
+        "purpose": "Card hover lift, hover washes, color changes; progress keys 200ms."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "All transitions and animations under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "600px"
+      },
+      {
+        "name": "md",
+        "value": "900px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Bicycle-blue contained action with a 2px hard edge that collapses on press.",
+      "html": "<button class=\"ds-btn-primary\">Study all due · 7</button>",
+      "css": ".ds-btn-primary{background:#0d3b8f;color:#fff;border:none;border-radius:8px;padding:8.8px 20px;font-family:Barlow,system-ui,sans-serif;font-weight:600;font-size:15px;letter-spacing:.01em;cursor:pointer;box-shadow:0 2px 0 #082560;transition:transform .06s ease,box-shadow .06s ease,background-color .15s}.ds-btn-primary:hover{background:#134aad}.ds-btn-primary:active{transform:translateY(2px);box-shadow:0 0 0 #082560}.ds-btn-primary:focus-visible{outline:2px solid #0d3b8f;outline-offset:2px}.ds-btn-primary:disabled{background:#a9bfa5;color:#3e5a47;box-shadow:none}"
+    },
+    {
+      "name": "Outlined Button",
+      "kind": "button",
+      "refersTo": "button-outlined",
+      "description": "Secondary action on the table: 1.5px stroke in table text, hover wash.",
+      "html": "<button class=\"ds-btn-outlined\">Back to deck</button>",
+      "css": ".ds-btn-outlined{background:transparent;color:#14301f;border:1.5px solid #14301f;border-radius:8px;padding:8.8px 16px;font-family:Barlow,system-ui,sans-serif;font-weight:600;font-size:14px;letter-spacing:.01em;cursor:pointer;transition:background-color .15s}.ds-btn-outlined:hover{background:rgba(20,48,31,0.06)}.ds-btn-outlined:focus-visible{outline:2px solid #0d3b8f;outline-offset:2px}"
+    },
+    {
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Quiet table-side action (back, undo, example deck): muted text that darkens on hover.",
+      "html": "<button class=\"ds-btn-text\">Example deck</button>",
+      "css": ".ds-btn-text{background:transparent;color:#3e5a47;border:none;border-radius:8px;padding:4px 10px;font-family:Barlow,system-ui,sans-serif;font-weight:600;font-size:13px;letter-spacing:.01em;cursor:pointer;transition:color .15s}.ds-btn-text:hover{color:#14301f}.ds-btn-text:focus-visible{outline:2px solid #0d3b8f;outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Card-stock input with a 1.5px card-rule outline; focus turns the outline Bicycle Blue.",
+      "html": "<label class=\"ds-field\"><span>Deck name</span><input class=\"ds-input\" value=\"Organic chemistry\"></label>",
+      "css": ".ds-field{display:inline-flex;flex-direction:column;gap:6px;font-family:Barlow,system-ui,sans-serif}.ds-field span{font-size:12.5px;font-weight:600;color:#5f5f5f}.ds-input{background:#faf8f3;color:#161616;border:1.5px solid #dcd8cf;border-radius:8px;padding:12px 14px;font:inherit;font-size:15px;font-weight:500;caret-color:#0d3b8f;outline:none;transition:border-color .15s}.ds-input::placeholder{color:#5f5f5f}.ds-input:hover{border-color:#5f5f5f}.ds-input:focus{border-color:#0d3b8f}"
+    },
+    {
+      "name": "Grade Chips",
+      "kind": "chip",
+      "refersTo": "chip-grade",
+      "description": "The four poker chips that grade a card: Again red, Hard orange, Good green, Easy blue; 8 white rim dashes, hard edge, 3px press.",
+      "html": "<div class=\"ds-chip-row\"><label><button class=\"ds-chip\" style=\"background:#c8102e;--edge:#7f0a1d\"><svg viewBox=\"0 0 100 100\" aria-hidden=\"true\" style=\"position:absolute;inset:0;width:100%;height:100%;pointer-events:none\"><circle cx=\"50\" cy=\"50\" r=\"44\" fill=\"none\" stroke=\"rgba(255,255,255,0.92)\" stroke-width=\"7\" stroke-dasharray=\"17.3 17.3\" stroke-dashoffset=\"8.6\"/><circle cx=\"50\" cy=\"50\" r=\"33\" fill=\"none\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1.5\"/></svg><span>1</span></button>Again</label><label><button class=\"ds-chip\" style=\"background:#d97b12;--edge:#8a4c08\"><svg viewBox=\"0 0 100 100\" aria-hidden=\"true\" style=\"position:absolute;inset:0;width:100%;height:100%;pointer-events:none\"><circle cx=\"50\" cy=\"50\" r=\"44\" fill=\"none\" stroke=\"rgba(255,255,255,0.92)\" stroke-width=\"7\" stroke-dasharray=\"17.3 17.3\" stroke-dashoffset=\"8.6\"/><circle cx=\"50\" cy=\"50\" r=\"33\" fill=\"none\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1.5\"/></svg><span>2</span></button>Hard</label><label><button class=\"ds-chip\" style=\"background:#1f8a4c;--edge:#125430\"><svg viewBox=\"0 0 100 100\" aria-hidden=\"true\" style=\"position:absolute;inset:0;width:100%;height:100%;pointer-events:none\"><circle cx=\"50\" cy=\"50\" r=\"44\" fill=\"none\" stroke=\"rgba(255,255,255,0.92)\" stroke-width=\"7\" stroke-dasharray=\"17.3 17.3\" stroke-dashoffset=\"8.6\"/><circle cx=\"50\" cy=\"50\" r=\"33\" fill=\"none\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1.5\"/></svg><span>3</span></button>Good</label><label><button class=\"ds-chip\" style=\"background:#0d3b8f;--edge:#082560\"><svg viewBox=\"0 0 100 100\" aria-hidden=\"true\" style=\"position:absolute;inset:0;width:100%;height:100%;pointer-events:none\"><circle cx=\"50\" cy=\"50\" r=\"44\" fill=\"none\" stroke=\"rgba(255,255,255,0.92)\" stroke-width=\"7\" stroke-dasharray=\"17.3 17.3\" stroke-dashoffset=\"8.6\"/><circle cx=\"50\" cy=\"50\" r=\"33\" fill=\"none\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1.5\"/></svg><span>4</span></button>Easy</label></div>",
+      "css": ".ds-chip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;border:none;padding:0;color:#fff;font-family:\"Barlow Condensed\",\"Barlow\",system-ui,sans-serif;font-weight:700;font-size:27px;line-height:1;cursor:pointer;box-shadow:0 3px 0 var(--edge),0 6px 10px -4px rgba(0,0,0,0.35);transition:transform .06s ease,box-shadow .06s ease,filter .12s}.ds-chip:hover{filter:brightness(1.08)}.ds-chip:active{transform:translateY(3px);box-shadow:0 0 0 var(--edge),0 2px 4px -2px rgba(0,0,0,0.35)}.ds-chip:focus-visible{outline:2px solid #0d3b8f;outline-offset:2px}.ds-chip span{position:relative}.ds-chip-row{display:flex;gap:28px;justify-content:center;font-family:Barlow,system-ui,sans-serif}.ds-chip-row label{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#14301f}"
+    },
+    {
+      "name": "Due Badge Chip",
+      "kind": "chip",
+      "refersTo": "chip-badge",
+      "description": "A 34px Again-red chip overhanging a deck corner with the due count.",
+      "html": "<div class=\"ds-badge\" style=\"background:#c8102e;--edge:#7f0a1d\"><svg viewBox=\"0 0 100 100\" aria-hidden=\"true\" style=\"position:absolute;inset:0;width:100%;height:100%;pointer-events:none\"><circle cx=\"50\" cy=\"50\" r=\"44\" fill=\"none\" stroke=\"rgba(255,255,255,0.92)\" stroke-width=\"7\" stroke-dasharray=\"17.3 17.3\" stroke-dashoffset=\"8.6\"/><circle cx=\"50\" cy=\"50\" r=\"33\" fill=\"none\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1.5\"/></svg><span>6</span></div>",
+      "css": ".ds-badge{position:relative;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;color:#fff;font-family:\"Barlow Condensed\",\"Barlow\",system-ui,sans-serif;font-weight:700;font-size:14px;line-height:1;box-shadow:0 3px 0 var(--edge),0 6px 10px -4px rgba(0,0,0,0.35)}.ds-badge span{position:relative}"
+    },
+    {
+      "name": "Card Face",
+      "kind": "card",
+      "refersTo": "card-face",
+      "description": "A face-up study card: card stock, corner indices (bottom-right rotated 180deg), centered balanced question, chapter foot.",
+      "html": "<div class=\"ds-face\"><div class=\"ds-index ds-index-tl\">4</div><p class=\"ds-question\">What is the capital of Mongolia?</p><div class=\"ds-foot\">Chapter 2: Asia</div><div class=\"ds-index ds-index-br\" aria-hidden=\"true\">4</div></div>",
+      "css": ".ds-face{position:relative;width:240px;aspect-ratio:63/88;background:#faf8f3;color:#161616;border-radius:12px;box-shadow:0 1px 0 rgba(0,0,0,0.12),0 8px 18px -6px rgba(0,0,0,0.28);padding:48px 26px 44px;display:flex;align-items:center;justify-content:center;font-family:Barlow,system-ui,sans-serif}.ds-index{position:absolute;font-family:\"Barlow Condensed\",\"Barlow\",system-ui,sans-serif;font-weight:700;font-size:28px;line-height:1;letter-spacing:.01em;font-variant-numeric:tabular-nums;user-select:none}.ds-index-tl{top:12px;left:14px}.ds-index-br{bottom:12px;right:14px;transform:rotate(180deg)}.ds-question{margin:0;font-weight:600;font-size:22px;line-height:1.3;letter-spacing:-.005em;text-align:center;text-wrap:balance}.ds-foot{position:absolute;bottom:16px;left:52px;right:52px;text-align:center;font-size:12.5px;color:#5f5f5f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+    },
+    {
+      "name": "Deck Back",
+      "kind": "card",
+      "refersTo": "card-back",
+      "description": "A face-down deck on the table: card stock, printed Bicycle frame with a procedural lattice, name ribbon; lifts and tilts on hover.",
+      "html": "<button class=\"ds-back\"><svg viewBox=\"0 0 63 88\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><defs><pattern id=\"ds-lat\" width=\"10\" height=\"10\" patternUnits=\"userSpaceOnUse\" patternTransform=\"scale(0.3125) rotate(45)\"><path d=\"M0 5 L5 0 L10 5 L5 10 Z\" fill=\"none\" stroke=\"#0d3b8f\" stroke-width=\"1.4\"/><circle cx=\"5\" cy=\"5\" r=\"1.1\" fill=\"#0d3b8f\"/></pattern></defs><rect width=\"63\" height=\"88\" rx=\"2.5\" fill=\"#0d3b8f\"/><rect x=\"1.6\" y=\"1.6\" width=\"59.8\" height=\"84.8\" rx=\"1.6\" fill=\"#fff\"/><rect x=\"3\" y=\"3\" width=\"57\" height=\"82\" rx=\"1\" fill=\"url(#ds-lat)\"/><rect x=\"3\" y=\"3\" width=\"57\" height=\"82\" rx=\"1\" fill=\"none\" stroke=\"#0d3b8f\" stroke-width=\"0.8\"/></svg><div class=\"ds-ribbon\"><strong>Organic chemistry</strong><small>9 cards</small></div></button>",
+      "css": ".ds-back{position:relative;display:block;width:180px;aspect-ratio:63/88;padding:0;border:none;background:#faf8f3;border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;box-shadow:0 1px 0 rgba(0,0,0,0.12),0 8px 18px -6px rgba(0,0,0,0.28);transition:transform .15s ease,box-shadow .15s ease}.ds-back svg{position:absolute;inset:6%;width:88%;height:88%;display:block}.ds-back:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:0 1px 0 rgba(0,0,0,0.12),0 14px 24px -8px rgba(0,0,0,0.35)}.ds-back:focus-visible{outline:2px solid #0d3b8f;outline-offset:2px}.ds-ribbon{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);background:#faf8f3;color:#161616;padding:8px 12px;border-top:1.5px solid #dcd8cf;border-bottom:1.5px solid #dcd8cf;font-family:Barlow,system-ui,sans-serif}.ds-ribbon strong{display:block;font-family:\"Barlow Condensed\",\"Barlow\",system-ui,sans-serif;font-weight:700;font-size:17px;line-height:1.15;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-ribbon small{display:block;font-size:12px;color:#5f5f5f;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Shell Header",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "The only navigation: 56px row, brand left, controls and theme toggle right.",
+      "html": "<header class=\"ds-shell\"><a class=\"ds-brand\" href=\"#\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><rect x=\"11\" y=\"7\" width=\"34\" height=\"44\" rx=\"4\" fill=\"#fff\" stroke=\"#0d3b8f\" stroke-width=\"1.5\" transform=\"rotate(-14 28 31)\"/><rect x=\"21\" y=\"14\" width=\"34\" height=\"44\" rx=\"4\" fill=\"#fff\" stroke=\"#161616\" stroke-width=\"1.5\"/><path d=\"M40 22 L32 38 h6 L34 50 L46 32 h-6 Z\" fill=\"#c8102e\"/></svg>flashmd</a><div class=\"ds-shell-right\"><button class=\"ds-btn-text\">Example deck</button><button class=\"ds-iconbtn\" aria-label=\"Switch to dark table\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/></svg></button></div></header>",
+      "css": ".ds-shell{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#c9dbc5;color:#14301f;font-family:Barlow,system-ui,sans-serif}.ds-brand{display:inline-flex;align-items:center;gap:8px;color:inherit;text-decoration:none;font-family:\"Barlow Condensed\",\"Barlow\",system-ui,sans-serif;font-weight:700;font-size:21px;letter-spacing:.02em;line-height:1}.ds-brand svg{transition:transform .18s ease}.ds-brand:hover svg{transform:rotate(-6deg)}.ds-shell-right{display:flex;align-items:center;gap:8px}.ds-btn-text{background:transparent;color:#3e5a47;border:none;border-radius:8px;padding:4px 10px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.ds-btn-text:hover{color:#14301f}.ds-iconbtn{display:inline-flex;padding:5px;border:none;border-radius:50%;background:transparent;color:#3e5a47;cursor:pointer;transition:color .15s,background-color .15s}.ds-iconbtn:hover{color:#14301f;background:rgba(20,48,31,0.06)}.ds-iconbtn:focus-visible{outline:2px solid #0d3b8f;outline-offset:2px}"
+    },
+    {
+      "name": "Progress Keys",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "One 6px key per card along the top edge; unanswered in table rule, current in table text, answered lit in grade ink.",
+      "html": "<div class=\"ds-keys\"><i style=\"background:#1f8a4c\"></i><i style=\"background:#c8102e\"></i><i style=\"background:#0d3b8f\"></i><i style=\"background:#d97b12\"></i><i style=\"background:#14301f\"></i><i></i><i></i><i></i><i></i></div>",
+      "css": ".ds-keys{display:flex;gap:3px;height:6px;width:320px;padding:0 0}.ds-keys i{flex:1;min-width:0;border-radius:4px;background:#a9bfa5;transition:background-color .2s ease}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Card Table",
+    "overview": "A deck is a deck. flashmd refuses the category default (a centered card on a neutral app surface, four colored buttons, a list of decks with progress bars) and instead puts real playing cards on a real table. There are two tables, a pale daylight baize and a deep night baize, and exactly one card stock: near-white paper that stays near-white in both themes and is the light source of every screen. Ink printed on a card is near-black regardless of theme; the table's own text shifts with the table.\n\nColor is scarce and rule-bound. Bicycle blue and red carry deck backs, corner indices, and primary actions. A single color law governs grading: Again is red, Hard is orange, Good is green, Easy is blue, and a grade wears the same color everywhere it appears (chips, progress keys, due badges, results piles, accuracy readouts). No gold, no neon, no gradients, no glass, no glow. Depth is physical: a card casts a soft drop on the baize, a chip has a thick edge that collapses when pressed.\n\nDensity is generous on the table and tight on the card. Readouts live in the four corners of a view; the center belongs to the cards. Motion is dealing-grammar only: a card drops in, a card flips about its vertical axis, chips slide up after the flip, a press pushes a chip into the table.",
+    "keyCharacteristics": [
+      "Two baize tables (day / night), one unchanging card stock",
+      "Card ink is always near-black; table text follows the theme",
+      "Bicycle blue / red for backs, indices, primary actions; the grade law for everything graded",
+      "Poker-card geometry: 63:88 ratio, 12px corners, corner indices top-left and rotated bottom-right",
+      "Poker chips (round, white rim dashes, thick edge) as the only grade control, counter, and badge",
+      "Procedural card backs derived from the deck name",
+      "Barlow for UI, Barlow Condensed for indices and numerals, system mono for code"
+    ],
+    "rules": [
+      {
+        "name": "The One Stock Rule",
+        "body": "Card stock is `#faf8f3` on both tables and its ink is `#161616` on both tables. A theme change recolors the table, never the cards.",
+        "section": "colors"
+      },
+      {
+        "name": "The Table Text Rule",
+        "body": "Accent-colored text on the baize uses the table-tinted variants (`*-blue-text`, `*-red-text`, `*-good-text`, `*-hard-text`); the raw inks are for stock and chips only.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rank Rule",
+        "body": "Any number that counts something (index, n/N, due, score, streak, chapter number) is Barlow Condensed 700 with `font-variant-numeric: tabular-nums`. Body Barlow never carries a headline numeral.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Buttons and labels are sentence case at 600 with 0.01em tracking. No uppercase eyebrows, no kickers.",
+        "section": "typography"
+      },
+      {
+        "name": "The Edge Is The Press Rule",
+        "body": "Chips and primary buttons show depth as a hard bottom edge in their own darker ink. Pressing moves the object down by exactly the edge height and the edge disappears. The edge is never a decorative offset on a card or a container.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Stock Casts, The Table Does Not Rule",
+        "body": "Only card stock (and chips on it) casts a shadow. Nothing on the baize itself (buttons text/outlined, readouts, progress keys) has a shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** put every face-up surface on card stock (`#faf8f3`) with near-black ink, in both themes.",
+      "**Do** color any grade or accuracy with the Grade Law inks and the matching `-edge` for chips.",
+      "**Do** set every count in Barlow Condensed 700 with tabular numerals.",
+      "**Do** use the poker chip for anything round and pressable or countable; the 8-dash rim is part of the component.",
+      "**Do** keep cards at 63:88 with 12px corners, and give the bottom-right index a 180 degree turn.",
+      "**Do** keep readouts in the corners of a view and the cards in the center.",
+      "**Do** use the table-tinted `*-text` variants for accent text on the baize."
+    ],
+    "donts": [
+      "**Don't** use gold, neon, gradients, glass, blur or glow anywhere.",
+      "**Don't** tint card stock or card ink with the theme; only the table changes.",
+      "**Don't** invent a fifth grade color or re-map a grade's color per screen.",
+      "**Don't** put a shadow on anything that is not card stock or a chip; text and outlined buttons stay flat on the table.",
+      "**Don't** use hard offset edges on cards or containers; the edge belongs to chips and primary buttons only, and it collapses on press.",
+      "**Don't** add uppercase eyebrows, kickers, or tracked labels; buttons are sentence case.",
+      "**Don't** add ripple, elevation, or partial reveal to the flip; one gesture turns the whole card."
+    ]
+  }
+}

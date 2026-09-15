@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Box, Typography, Button, LinearProgress, IconButton } from '@mui/material'
+import { Box, Typography, Button, IconButton, useTheme } from '@mui/material'
 import { ArrowBackOutlined, UndoRounded } from '@mui/icons-material'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Card, Grade, GradedCard } from '../types'
+import { ink, table, gradeInk, gradeEdge, stock, CARD_RATIO } from '../ui'
+import { fonts } from '../theme'
 import Shell from './Shell'
+import { CardBack, Chip, Index } from './cards'
 
 interface Props {
   cards: Card[]
@@ -12,22 +15,23 @@ interface Props {
   onBack: () => void
 }
 
-const GRADES: { grade: Grade; label: string; cap: string; color: string; edge: string }[] = [
-  { grade: 'AGAIN', label: 'Again', cap: '1', color: '#ef5e4e', edge: '#7a2e25' },
-  { grade: 'HARD', label: 'Hard', cap: '2', color: '#e8b13a', edge: '#7a5e1c' },
-  { grade: 'GOOD', label: 'Good', cap: '3', color: '#5fcf6a', edge: '#2f6b34' },
-  { grade: 'EASY', label: 'Easy', cap: '4', color: '#7c6af7', edge: '#4b3fad' },
+const GRADES: { grade: Grade; label: string; cap: string }[] = [
+  { grade: 'AGAIN', label: 'Again', cap: '1' },
+  { grade: 'HARD', label: 'Hard', cap: '2' },
+  { grade: 'GOOD', label: 'Good', cap: '3' },
+  { grade: 'EASY', label: 'Easy', cap: '4' },
 ]
 
 export default function StudySession({ cards, onDone, onBack }: Props) {
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [history, setHistory] = useState<GradedCard[]>([])
+  const t = table[useTheme().palette.mode]
 
   const card = cards[index]
-  const progress = ((index + (flipped ? 0.5 : 0)) / cards.length) * 100
   const correct = history.filter(h => h.grade !== 'AGAIN').length
   const missed = history.length - correct
+  const remaining = cards.length - index - 1
 
   const grade = (g: Grade) => {
     const next = [...history, { card, grade: g }]
@@ -71,131 +75,212 @@ export default function StudySession({ cards, onDone, onBack }: Props) {
     <Shell
       fill
       left={
-        <IconButton size="small" onClick={quit} sx={{ ml: -0.5, color: 'text.secondary', '&:hover': { color: 'text.primary' } }}>
+        <IconButton size="small" onClick={quit} aria-label="Quit session" sx={{ ml: -0.5 }}>
           <ArrowBackOutlined fontSize="small" />
         </IconButton>
       }
       right={
-        <Box display="flex" alignItems="center" gap={2}>
-          <Box display="flex" alignItems="center" gap={1.25} sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 13 }}>
-            <Box component="span" sx={{ color: '#5fcf6a' }}>{correct}</Box>
-            <Box component="span" sx={{ color: '#ef5e4e' }}>{missed}</Box>
-          </Box>
-          <Typography variant="body2" color="text.secondary" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
-            {index + 1} <span style={{ color: '#46464c' }}>/ {cards.length}</span>
-          </Typography>
-        </Box>
+        <Typography sx={{ fontFamily: fonts.index, fontWeight: 700, fontSize: 20, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+          {index + 1}<Box component="span" sx={{ color: 'text.secondary', fontWeight: 600 }}> / {cards.length}</Box>
+        </Typography>
       }
     >
-      <LinearProgress
-        variant="determinate"
-        value={progress}
-        sx={{
-          height: 4, borderRadius: 0,
-          '& .MuiLinearProgress-bar': { bgcolor: '#7c6af7', transition: 'transform 0.3s ease' },
-        }}
-      />
+      {/* one key per card, lit in its grade color; scales, never wraps */}
+      <Box
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={cards.length}
+        aria-valuenow={index}
+        aria-label="Session progress"
+        sx={{ display: 'flex', gap: cards.length > 60 ? '1px' : '3px', px: { xs: 2, sm: 3 }, height: 6, flexShrink: 0 }}
+      >
+        {cards.map((_, i) => {
+          const g = history[i]?.grade
+          const current = i === index
+          return (
+            <Box
+              key={i}
+              sx={{
+                flex: 1, minWidth: 0, borderRadius: 1,
+                bgcolor: g ? gradeInk[g] : current ? t.text : t.rule,
+                opacity: g || current ? 1 : 0.6,
+                transition: 'background-color 0.2s ease',
+              }}
+            />
+          )
+        })}
+      </Box>
 
-      <Box flex={1} display="flex" flexDirection="column" alignItems="center" justifyContent="center" px={{ xs: 2.5, sm: 4 }} py={4}>
-        <Box display="flex" alignItems="center" gap={1.5} mb={3}>
-          <Typography variant="caption" sx={{ color: '#55555c', letterSpacing: '0.06em', fontWeight: 600 }}>
-            {card.chapterTitle}
-          </Typography>
-          {history.length > 0 && (
-            <Button
-              size="small"
-              startIcon={<UndoRounded sx={{ fontSize: 15 }} />}
-              onClick={undo}
-              sx={{ minWidth: 0, py: 0, px: 1, color: '#55555c', fontSize: 12, '&:hover': { color: 'text.primary', bgcolor: 'transparent' } }}
-            >
-              undo
-            </Button>
-          )}
+      <Box flex={1} display="flex" flexDirection="column" alignItems="center" justifyContent="center" px={{ xs: 2, sm: 4 }} pt={{ xs: 1.5, sm: 2 }} pb={{ xs: 1, sm: 2 }} minHeight={0} gap={{ xs: 1.5, sm: 2.5 }}>
+        {/* the rest of the deck, face down: where the next card is dealt from */}
+        <Box
+          aria-label={`${remaining} ${remaining === 1 ? 'card' : 'cards'} left in the deck`}
+          sx={{ position: 'relative', width: { xs: 52, sm: 60 }, flexShrink: 0, mb: { xs: 0.5, sm: 1 }, opacity: remaining === 0 ? 0.35 : 1, transition: 'opacity 0.3s' }}
+        >
+          {[2, 1, 0].map(i => (
+            <CardBack
+              key={i}
+              mini
+              seed={card.chapterTitle}
+              sx={{
+                position: i === 0 ? 'relative' : 'absolute', inset: 0,
+                transform: `translate(${i * 2}px, ${i * 2}px)`,
+                borderRadius: '6px',
+                boxShadow: '0 1px 0 rgba(0,0,0,0.12), 0 3px 6px -2px rgba(0,0,0,0.25)',
+                opacity: remaining > i ? 1 : 0,
+              }}
+            />
+          ))}
         </Box>
 
-        {/* Card */}
+        {/* The card: a true poker card, portrait on both viewports */}
         <Box
+          component="button"
+          type="button"
           onClick={() => setFlipped(f => !f)}
-          sx={{ width: '100%', maxWidth: 620, perspective: '1500px', cursor: 'pointer', mb: 4 }}
+          aria-label={flipped ? 'Show question' : 'Show answer'}
+          aria-pressed={flipped}
+          tabIndex={-1}
+          sx={{
+            width: { xs: 'min(100%, calc((100dvh - 320px) * 63 / 88))', sm: 'min(100%, calc((100dvh - 400px) * 63 / 88))' },
+            maxWidth: 480,
+            aspectRatio: CARD_RATIO,
+            perspective: '1600px', cursor: 'pointer',
+            border: 'none', bgcolor: 'transparent', p: 0, textAlign: 'inherit', color: 'inherit', font: 'inherit',
+            flexShrink: 0,
+          }}
         >
           <Box
+            key={index}
             sx={{
-              position: 'relative',
-              minHeight: { xs: 280, sm: 340 },
+              position: 'relative', width: '100%', height: '100%',
               transformStyle: 'preserve-3d',
               transition: 'transform 0.45s cubic-bezier(0.4, 0.1, 0.2, 1)',
               transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              animation: 'deal 0.26s cubic-bezier(0.2, 0.8, 0.2, 1)',
             }}
           >
             {/* Front */}
-            <Face sx={{ bgcolor: '#141416', border: '1px solid #2a2a2e' }}>
-              <Box
-                aria-hidden
+            <Face>
+              <Index size={28}>{index + 1}</Index>
+              <Index corner="br" size={28}>{index + 1}</Index>
+              <Typography
+                component="p"
                 sx={{
-                  position: 'absolute', top: 14, left: 20,
-                  fontFamily: '"IBM Plex Mono", monospace', fontWeight: 600,
-                  fontSize: 56, lineHeight: 1, color: 'rgba(255,255,255,0.035)',
-                  fontVariantNumeric: 'tabular-nums', userSelect: 'none',
+                  fontFamily: fonts.ui, fontWeight: 600, textAlign: 'center', lineHeight: 1.3,
+                  fontSize: { xs: 22, sm: 26 }, letterSpacing: '-0.005em', textWrap: 'balance', m: 0,
+                  overflowY: 'auto', maxHeight: '100%', width: '100%',
                 }}
               >
-                {String(index + 1).padStart(2, '0')}
-              </Box>
-              <Typography variant="h5" fontWeight={600} textAlign="center" color="text.primary" lineHeight={1.45} sx={{ letterSpacing: '-0.01em', position: 'relative' }}>
                 {card.question}
               </Typography>
-              <Hint>space or click to flip</Hint>
+              <Foot>{card.chapterTitle}</Foot>
             </Face>
             {/* Back */}
-            <Face back sx={{ bgcolor: '#101011', border: '1px solid #2a2a2e' }}>
+            <Face back>
+              <Index color={ink.blue} size={28}>{index + 1}</Index>
+              <Index corner="br" color={ink.blue} size={28}>{index + 1}</Index>
               <Box
                 sx={{
-                  width: '100%', color: '#d2d2d6', fontSize: 16, lineHeight: 1.75,
+                  width: '100%', fontSize: { xs: 16, sm: 17 }, lineHeight: 1.6,
                   textAlign: 'center', overflowY: 'auto', maxHeight: '100%',
-                  '& p': { m: 0, mb: 1, '&:last-child': { mb: 0 } },
-                  '& ul, & ol': { textAlign: 'left', m: 0, pl: 3 },
+                  '& p': { m: 0, mb: 1.25, '&:last-child': { mb: 0 } },
+                  '& ul, & ol': { textAlign: 'left', m: 0, mb: 1.25, pl: 3 },
                   '& li': { mb: 0.5 },
-                  '& code': { fontFamily: '"IBM Plex Mono", monospace', fontSize: 14, bgcolor: 'rgba(124,106,247,0.12)', color: '#b3a6fb', px: 0.6, py: 0.2, borderRadius: '4px' },
-                  '& pre': { textAlign: 'left', bgcolor: '#16161a', p: 1.5, borderRadius: '8px', overflowX: 'auto' },
-                  '& pre code': { bgcolor: 'transparent', color: '#d2d2d6', p: 0 },
-                  '& strong': { color: '#fff', fontWeight: 600 },
-                  '& a': { color: '#9a8cf9' },
+                  '& code': { fontFamily: fonts.mono, fontSize: '0.88em', bgcolor: '#eef1f7', color: ink.blue, px: 0.6, py: 0.2, borderRadius: '4px' },
+                  '& pre': { textAlign: 'left', bgcolor: '#f1f0ec', border: `1px solid ${ink.cardRule}`, p: 1.5, mb: 1.25, borderRadius: '8px', overflowX: 'auto' },
+                  '& pre code': { bgcolor: 'transparent', color: ink.card, p: 0 },
+                  '& strong': { fontWeight: 700 },
+                  '& a': { color: ink.blue },
+                  '& table': { borderCollapse: 'collapse', mx: 'auto', mb: 1.25 },
+                  '& th, & td': { border: `1px solid ${ink.cardRule}`, px: 1, py: 0.5 },
                 }}
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{card.answer}</ReactMarkdown>
               </Box>
-              <Hint>answer</Hint>
+              <Foot>{card.chapterTitle}</Foot>
             </Face>
           </Box>
         </Box>
 
-        {/* Grade buttons */}
-        <Box width="100%" maxWidth={560}>
-          <Box display="flex" gap={1}>
+        {/* Chips: exist only once the card is flipped; before that, the flip hint sits in their place */}
+        <Box sx={{ position: 'relative', minHeight: 96, width: '100%', flexShrink: 0 }}>
+          <Typography
+            aria-hidden={flipped}
+            sx={{
+              position: 'absolute', left: 0, right: 0, top: 24, textAlign: 'center',
+              fontSize: 14, color: 'text.secondary',
+              transition: 'opacity 0.15s ease', opacity: flipped ? 0 : 1,
+            }}
+          >
+            Tap the card or press Space to flip
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex', gap: { xs: 2, sm: 3.5 }, alignItems: 'flex-start', justifyContent: 'center',
+              transition: 'transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease',
+              transform: flipped ? 'none' : 'translateY(14px)',
+              opacity: flipped ? 1 : 0,
+              pointerEvents: flipped ? 'auto' : 'none',
+            }}
+            aria-hidden={!flipped}
+          >
             {GRADES.map(g => (
-              <GradeButton key={g.grade} label={g.label} cap={g.cap} color={g.color} edge={g.edge} disabled={!flipped} onClick={() => grade(g.grade)} />
+              <Box key={g.grade} display="flex" flexDirection="column" alignItems="center" gap={0.75}>
+                <Chip
+                  color={gradeInk[g.grade]}
+                  edge={gradeEdge[g.grade]}
+                  size={64}
+                  label={`${g.label} (${g.cap})`}
+                  onClick={() => grade(g.grade)}
+                  disabled={!flipped}
+                  tabIndex={flipped ? 0 : -1}
+                >
+                  {g.cap}
+                </Chip>
+                <Typography sx={{ fontSize: 13, fontWeight: 600, color: 'text.primary', lineHeight: 1 }}>{g.label}</Typography>
+              </Box>
             ))}
           </Box>
-          <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', mt: 1.5, color: '#56565e' }}>
-            {flipped ? 'press 1 to 4, or U to undo' : 'press space to flip'}
-          </Typography>
         </Box>
+      </Box>
+
+      {/* corner readouts: tally bottom-left, undo bottom-right */}
+      <Box display="flex" alignItems="center" justifyContent="space-between" px={{ xs: 2, sm: 3 }} pb={{ xs: 2, sm: 2.5 }} flexShrink={0}>
+        <Box display="flex" alignItems="center" gap={1.25} aria-label={`${correct} correct, ${missed} missed`}>
+          <Box display="flex" alignItems="center" gap={0.6}>
+            <Chip color={ink.good} edge={gradeEdge.GOOD} size={22} />
+            <Typography sx={{ fontFamily: fonts.index, fontWeight: 700, fontSize: 18, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>{correct}</Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap={0.6}>
+            <Chip color={ink.again} edge={gradeEdge.AGAIN} size={22} />
+            <Typography sx={{ fontFamily: fonts.index, fontWeight: 700, fontSize: 18, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>{missed}</Typography>
+          </Box>
+        </Box>
+        <Button
+          size="small"
+          startIcon={<UndoRounded sx={{ fontSize: 16 }} />}
+          onClick={undo}
+          disabled={history.length === 0}
+          sx={{ fontSize: 13, '&.Mui-disabled': { color: t.muted, opacity: 0.5 } }}
+        >
+          Undo
+        </Button>
       </Box>
     </Shell>
   )
 }
 
-function Face({ children, sx, back }: { children: React.ReactNode; sx?: object; back?: boolean }) {
+function Face({ children, back }: { children: React.ReactNode; back?: boolean }) {
   return (
     <Box
       sx={{
+        ...stock,
         position: 'absolute', inset: 0,
         backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
         transform: back ? 'rotateY(180deg)' : 'none',
-        borderRadius: '18px',
-        boxShadow: '0 4px 0 rgba(0,0,0,0.5)',
-        p: { xs: 3.5, sm: 5 },
+        p: { xs: '48px 26px 44px', sm: '56px 40px 48px' },
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        ...sx,
       }}
     >
       {children}
@@ -203,44 +288,10 @@ function Face({ children, sx, back }: { children: React.ReactNode; sx?: object; 
   )
 }
 
-function GradeButton({ label, cap, color, edge, disabled, onClick }: {
-  label: string; cap: string; color: string; edge: string; disabled: boolean; onClick: () => void
-}) {
+/** Small plain line at the foot of a face: the chapter this card belongs to. */
+function Foot({ children }: { children: React.ReactNode }) {
   return (
-    <Button
-      fullWidth
-      onClick={onClick}
-      disabled={disabled}
-      sx={{
-        py: 1.1, fontWeight: 600, fontSize: 14, borderRadius: '12px',
-        flexDirection: 'column', gap: 0.3,
-        color: '#fff', bgcolor: color, boxShadow: `0 3px 0 ${edge}`,
-        '&:hover': { bgcolor: color, filter: 'brightness(1.08)', boxShadow: `0 3px 0 ${edge}` },
-        '&:active': { transform: 'translateY(3px)', boxShadow: `0 0 0 ${edge}` },
-        '&.Mui-disabled': { bgcolor: '#1e1e22', color: '#3c3c44', boxShadow: 'none' },
-        '&.Mui-disabled .keycap': { color: '#34343c', borderColor: '#2a2a30' },
-        transition: 'transform 0.04s ease, box-shadow 0.04s ease, filter 0.12s',
-      }}
-    >
-      {label}
-      <Box
-        component="span"
-        className="keycap"
-        sx={{
-          fontFamily: '"IBM Plex Mono", monospace', fontSize: 10.5, fontWeight: 600,
-          color: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.35)',
-          borderRadius: '4px', px: 0.5, lineHeight: 1.4,
-        }}
-      >
-        {cap}
-      </Box>
-    </Button>
-  )
-}
-
-function Hint({ children }: { children: React.ReactNode }) {
-  return (
-    <Typography variant="caption" sx={{ position: 'absolute', bottom: 16, color: '#3a3a40', letterSpacing: '0.05em' }}>
+    <Typography noWrap sx={{ position: 'absolute', bottom: 16, left: 52, right: 52, textAlign: 'center', fontSize: 12.5, color: ink.cardMuted }}>
       {children}
     </Typography>
   )

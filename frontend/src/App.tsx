@@ -89,10 +89,10 @@ export default function App() {
         open={!!toast}
         autoHideDuration={2500}
         onClose={() => setToast(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         {toast ? (
-          <Alert severity={toast.severity} variant="filled" onClose={() => setToast(null)} sx={{ borderRadius: '10px' }}>
+          <Alert severity={toast.severity} variant="filled" onClose={() => setToast(null)}>
             {toast.msg}
           </Alert>
         ) : undefined}

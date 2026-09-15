@@ -25,3 +25,9 @@ Thumbs.db
 
 # Persisted decks
 backend/data/
+
+# Claude Code / Impeccable local state
+.claude/
+.impeccable/review/
+.impeccable/live/
+.impeccable/config.local.json
