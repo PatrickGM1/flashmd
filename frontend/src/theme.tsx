@@ -118,6 +118,20 @@ function build(mode: Mode) {
         styleOverrides: { root: { color: t.muted, '&:hover': { color: t.text, backgroundColor: t.hover } } },
       },
       MuiCircularProgress: { styleOverrides: { root: { color: ink.blue } } },
+      // Menus and dialogs are card stock too: ink on stock in both themes, no dark-mode overlay tint.
+      MuiMenu: {
+        styleOverrides: {
+          paper: { backgroundColor: t.stock, backgroundImage: 'none', color: ink.card, borderRadius: 10, boxShadow: '0 1px 0 rgba(0,0,0,0.12), 0 10px 24px -6px rgba(0,0,0,0.35)' },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: { root: { fontSize: 14, fontWeight: 500, '&:hover': { backgroundColor: '#f1f0ec' } } },
+      },
+      MuiListItemIcon: { styleOverrides: { root: { color: ink.cardMuted, minWidth: 34 } } },
+      MuiDivider: { styleOverrides: { root: { borderColor: ink.cardRule } } },
+      MuiDialog: {
+        styleOverrides: { paper: { backgroundColor: t.stock, backgroundImage: 'none', color: ink.card } },
+      },
     },
   })
 }

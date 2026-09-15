@@ -10,7 +10,10 @@ async function json<T>(res: Response): Promise<T> {
     window.dispatchEvent(new Event(UNAUTHORIZED))
   }
   if (!res.ok) {
-    const msg = await res.text().catch(() => '')
+    // Spring error bodies are JSON; surface their message, not the blob
+    const text = await res.text().catch(() => '')
+    let msg = text
+    try { msg = JSON.parse(text).message || msg } catch { /* plain text */ }
     throw new Error(msg || `Request failed (${res.status})`)
   }
   return res.status === 204 ? (undefined as T) : res.json()

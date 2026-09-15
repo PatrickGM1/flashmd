@@ -54,8 +54,8 @@ public class AuthController {
     public Me register(@RequestBody Credentials c, HttpServletRequest req, HttpServletResponse res) {
         if (!registrationOpen) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Registration is closed. Ask your admin for an account.");
         String name = c.username() == null ? "" : c.username().trim();
-        if (name.length() < 2 || name.length() > 40 || !name.matches("[\\w.-]+"))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username: 2-40 letters, digits, . _ -");
+        if (name.length() < 2 || name.length() > 40 || !name.matches("[\\w.@+-]+"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username must be 2-40 characters: letters, digits, . _ @ + - (no spaces)");
         checkPassword(c.password());
         if (users.findByUsername(name).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "That username is taken");
