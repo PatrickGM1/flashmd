@@ -27,7 +27,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/decks")
-@CrossOrigin(origins = "*")
 @Tag(name = "Decks", description = "Parse, store and study markdown flashcard decks")
 public class DeckController {
 

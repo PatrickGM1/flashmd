@@ -20,7 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "flashmd.data-file=target/test-decks.json",
         "flashmd.activity-file=target/test-activity.json",
-        "flashmd.users-file=target/test-users.json"
+        "flashmd.users-file=target/test-users.json",
+        "flashmd.jwt-secret-file=target/test-jwt.secret"
 })
 @WithMockUser(username = "test-user")
 class DeckControllerTest {

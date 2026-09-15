@@ -9,7 +9,7 @@ public final class CurrentUser {
 
     public static String id() {
         Authentication a = SecurityContextHolder.getContext().getAuthentication();
-        return a == null ? null : a.getName();
+        return a == null || !a.isAuthenticated() || "anonymousUser".equals(a.getPrincipal()) ? null : a.getName();
     }
 
     public static boolean isAdmin() {
