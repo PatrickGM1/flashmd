@@ -102,7 +102,7 @@ export function Index({ children, corner = 'tl', color = ink.card, size = 22 }: 
 
 export function Chip({ color, edge, size = 64, label, children, onClick, disabled, title, sx, tabIndex }: {
   color: string; edge: string; size?: number; label?: string; children?: ReactNode
-  onClick?: () => void; disabled?: boolean; title?: string; sx?: SxProps<Theme>; tabIndex?: number
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void; disabled?: boolean; title?: string; sx?: SxProps<Theme>; tabIndex?: number
 }) {
   const clickable = !!onClick
   return (

@@ -53,3 +53,23 @@ export interface Activity {
   streak: number
   today: number
 }
+
+export interface Me {
+  id: string
+  username: string
+  role: 'USER' | 'ADMIN'
+  mustChangePassword: boolean
+  registrationOpen: boolean
+}
+
+export interface Account {
+  id: string
+  username: string
+  role: 'USER' | 'ADMIN'
+  createdAt: string
+  mustChangePassword: boolean
+  decks: number
+  cards: number
+  streak: number
+  lastActive: string | null
+}

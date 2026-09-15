@@ -1,7 +1,10 @@
-import { ReactNode } from 'react'
-import { Box, Container, IconButton } from '@mui/material'
-import { DarkModeOutlined, LightModeOutlined } from '@mui/icons-material'
+import { ReactNode, useState } from 'react'
+import { Box, Container, IconButton, Menu, MenuItem, ListItemIcon, Divider, Typography } from '@mui/material'
+import { DarkModeOutlined, LightModeOutlined, KeyOutlined, LogoutOutlined, ShieldOutlined } from '@mui/icons-material'
 import { fonts, useThemeMode } from '../theme'
+import { useAuth } from '../auth'
+import { ink } from '../ui'
+import { Chip } from './cards'
 
 interface Props {
   left?: ReactNode
@@ -44,6 +47,47 @@ export function ThemeToggle() {
   )
 }
 
+/** The seat: who is signed in, and the way out. Hidden until there is a session. */
+export function AccountMenu() {
+  const { me, signOut, navigate } = useAuth()
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+  if (!me) return null
+  const close = () => setAnchor(null)
+  const admin = me.role === 'ADMIN'
+  return (
+    <>
+      <Chip
+        color={admin ? ink.red : ink.blue}
+        edge={admin ? ink.redEdge : ink.blueEdge}
+        size={30}
+        label={`Account menu for ${me.username}`}
+        onClick={e => setAnchor(e.currentTarget)}
+        sx={{ fontSize: 14 }}
+      >
+        {me.username[0].toUpperCase()}
+      </Chip>
+      <Menu anchorEl={anchor} open={!!anchor} onClose={close} PaperProps={{ sx: { minWidth: 200, borderRadius: '10px', mt: 1 } }}>
+        <Box px={2} py={1}>
+          <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{me.username}</Typography>
+          <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>{admin ? 'Admin' : 'Player'}</Typography>
+        </Box>
+        <Divider />
+        {admin && (
+          <MenuItem onClick={() => { close(); navigate('admin') }}>
+            <ListItemIcon><ShieldOutlined fontSize="small" /></ListItemIcon>Accounts
+          </MenuItem>
+        )}
+        <MenuItem onClick={() => { close(); navigate('password') }}>
+          <ListItemIcon><KeyOutlined fontSize="small" /></ListItemIcon>Change password
+        </MenuItem>
+        <MenuItem onClick={() => { close(); signOut() }}>
+          <ListItemIcon><LogoutOutlined fontSize="small" /></ListItemIcon>Sign out
+        </MenuItem>
+      </Menu>
+    </>
+  )
+}
+
 export default function Shell({ left, right, children, maxWidth = 'sm', fill }: Props) {
   return (
     <Box minHeight="100dvh" display="flex" flexDirection="column" bgcolor="background.default">
@@ -59,6 +103,7 @@ export default function Shell({ left, right, children, maxWidth = 'sm', fill }: 
         <Box display="flex" alignItems="center" gap={1}>
           {right}
           <ThemeToggle />
+          <AccountMenu />
         </Box>
       </Box>
 

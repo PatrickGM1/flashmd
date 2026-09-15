@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Button, Alert, CircularProgress, IconButton, useTheme } from '@mui/material'
-import { DeleteOutlined, DriveFileRenameOutlineOutlined, AddRounded } from '@mui/icons-material'
+import { DeleteOutlined, DriveFileRenameOutlineOutlined, AddRounded, ArrowBackOutlined } from '@mui/icons-material'
 import { Activity, Card, Deck, DeckSummary } from '../types'
 import { listDecks, getDeck, createDeck, deleteDeck, renameDeck, getActivity } from '../api'
 import { ink, table, accuracyOnTable, CARD_RATIO } from '../ui'
@@ -12,9 +12,13 @@ import { CardBack, Chip } from './cards'
 interface Props {
   onOpenDeck: (deck: Deck) => void
   onStudyAll: (cards: Card[], deckMap: Map<Card, string>) => void
+  /** admin only: show this player's table instead of your own */
+  viewing?: { id: string; username: string }
+  onLeaveViewing?: () => void
 }
 
-export default function Home({ onOpenDeck, onStudyAll }: Props) {
+export default function Home({ onOpenDeck, onStudyAll, viewing, onLeaveViewing }: Props) {
+  const owner = viewing?.id
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -25,14 +29,14 @@ export default function Home({ onOpenDeck, onStudyAll }: Props) {
   const t = table[useTheme().palette.mode]
 
   const refresh = () => {
-    listDecks()
+    listDecks(owner)
       .then(setDecks)
       .catch(() => setError('Cannot reach the server. Is the backend running on :8080?'))
       .finally(() => setLoadingList(false))
-    getActivity().then(setActivity).catch(() => {})
+    getActivity(owner).then(setActivity).catch(() => {})
   }
 
-  useEffect(refresh, [])
+  useEffect(refresh, [owner])
 
   const totalDue = decks.reduce((s, d) => s + d.due, 0)
 
@@ -69,7 +73,7 @@ export default function Home({ onOpenDeck, onStudyAll }: Props) {
     setBusy(true)
     setError(null)
     try {
-      onOpenDeck(await createDeck(label, content))
+      onOpenDeck(await createDeck(label, content, owner))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Upload failed')
     } finally {
@@ -153,7 +157,9 @@ export default function Home({ onOpenDeck, onStudyAll }: Props) {
   return (
     <Shell
       maxWidth="md"
-      left={<Brand />}
+      left={viewing ? (
+        <Button startIcon={<ArrowBackOutlined sx={{ fontSize: 18 }} />} onClick={onLeaveViewing} sx={{ ml: -0.5, fontSize: 13 }}>Accounts</Button>
+      ) : <Brand />}
       right={
         <Box display="flex" alignItems="center" gap={1.5}>
           {activity && activity.streak > 0 && (
@@ -175,7 +181,7 @@ export default function Home({ onOpenDeck, onStudyAll }: Props) {
       <Box display="flex" alignItems="flex-end" justifyContent="space-between" flexWrap="wrap" gap={2} mb={3}>
         <Box>
           <Typography variant="h4" sx={{ fontSize: { xs: '2rem', sm: '2.4rem' }, lineHeight: 1 }}>
-            On the table
+            {viewing ? `${viewing.username}'s table` : 'On the table'}
           </Typography>
           <Typography variant="body2" color="text.secondary" mt={0.75}>
             {loadingList
