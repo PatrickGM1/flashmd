@@ -30,7 +30,9 @@ public class UserStore {
 
     private final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    /** Hash of nothing, compared against when the username is unknown so both paths take the same time. */
+    private final String decoy = encoder.encode("decoy");
     private final Map<String, User> users = new LinkedHashMap<>();
     private final Path file;
     private final String adminUser;
@@ -92,7 +94,7 @@ public class UserStore {
 
     public synchronized User create(String username, String password, User.Role role, boolean mustChange) {
         User u = new User(UUID.randomUUID().toString(), username.trim(), encoder.encode(password), role,
-                Instant.now().toString(), mustChange);
+                Instant.now().toString(), mustChange, 0);
         users.put(u.id(), u);
         persist();
         return u;
@@ -112,6 +114,11 @@ public class UserStore {
 
     public boolean matches(User u, String password) {
         return encoder.matches(password, u.passwordHash());
+    }
+
+    /** Burn the same bcrypt time as a real check, so "no such user" is not faster than "wrong password". */
+    public void matchesDecoy(String password) {
+        encoder.matches(password, decoy);
     }
 
     public String hash(String password) {

@@ -60,8 +60,16 @@ asked to pick a real password right away.
 - There is no "forgot password" email. An admin opens the account menu →
   **Accounts**, hits the key icon next to the user, and hands over the
   temporary password shown once. The user must pick a new one on next sign-in.
-- "Keep me signed in" keeps the session 30 days; otherwise 12 hours of
-  inactivity. Sessions survive restarts (stored under `backend/data/sessions`).
+- Sign-in issues a signed token (HS256 JWT) in an httpOnly, SameSite cookie;
+  `Secure` when served over HTTPS. Nothing is stored in the browser's JS-visible
+  storage. "Keep me signed in" keeps it 30 days, otherwise 12 hours. Changing
+  or resetting a password signs that account out everywhere else instantly.
+- Five wrong passwords lock that username for that client for 15 minutes.
+- The signing secret is generated on first run into `backend/data/jwt.secret`.
+  Running several backend replicas? Give them all the same `FLASHMD_JWT_SECRET`
+  (32+ random characters).
+- Passwords travel inside TLS; put the app behind HTTPS (the Docker setup is
+  plain HTTP for localhost only).
 - Decks and activity that existed before accounts were added belong to the
   first admin.
 
@@ -70,7 +78,7 @@ proxies `/api` to the backend, so port 3000 is the only one you touch.
 
 Decks, progress, accounts and sessions are written to `backend/data/` on the
 host (bind mounted into the backend): `decks.json`, `activity.json`,
-`users.json` (bcrypt hashes, no plain passwords), `sessions/`. They survive
+`users.json` (bcrypt hashes, no plain passwords), `jwt.secret`. They survive
 `docker compose down` and `up` — to wipe everything, delete the folder. Back it
 up by copying it.
 
@@ -182,7 +190,7 @@ npm run dev
 
 In dev, Vite proxies `/api` to `localhost:8080`, so start the backend first.
 Data is written under `backend/data/`. Override paths with `FLASHMD_DATA_FILE`,
-`FLASHMD_ACTIVITY_FILE`, `FLASHMD_USERS_FILE`, `FLASHMD_SESSION_DIR`.
+`FLASHMD_ACTIVITY_FILE`, `FLASHMD_USERS_FILE`, `FLASHMD_JWT_SECRET_FILE`.
 
 ## Layout
 

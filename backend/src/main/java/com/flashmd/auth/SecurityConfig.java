@@ -4,29 +4,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Session-cookie auth for a same-origin SPA. Login/register are open, everything
- * else under /api needs a session, /api/admin needs the ADMIN role.
- * CSRF is off: the cookie is SameSite=Lax and the API only accepts JSON bodies.
+ * Stateless auth: a signed JWT in an httpOnly, SameSite=Lax cookie, verified per request.
+ * Login/register are open, everything else under /api needs a valid token, /api/admin the ADMIN role.
+ * CSRF: the cookie is SameSite=Lax, so cross-site POST/PUT/DELETE never carry it; the API only
+ * reads JSON bodies, and the SPA is same-origin. No server-side session exists to fixate or leak.
  */
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
-    }
-
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, SecurityContextRepository repo) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .securityContext(sc -> sc.securityContextRepository(repo))
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .formLogin(f -> f.disable())
             .httpBasic(b -> b.disable())
             .logout(l -> l.disable())
@@ -35,7 +31,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/me", "/api/auth/logout").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll());
+                .anyRequest().permitAll())
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
