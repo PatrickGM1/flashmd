@@ -5,6 +5,12 @@ services:
     # decks.json lives on the host so it survives `up`/`down` and is easy to back up
     volumes:
       - ./backend/data:/app/data
+    environment:
+      # first-run admin account; default password must be changed on first sign-in
+      FLASHMD_ADMIN_USER: ${FLASHMD_ADMIN_USER:-admin}
+      FLASHMD_ADMIN_PASSWORD: ${FLASHMD_ADMIN_PASSWORD:-admin}
+      # set to "false" to stop people creating their own accounts
+      FLASHMD_REGISTRATION: ${FLASHMD_REGISTRATION:-true}
     expose:
       - "8080"
     healthcheck:

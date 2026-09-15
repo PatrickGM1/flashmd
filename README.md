@@ -21,6 +21,9 @@
 - **Daily streak** tracked across sessions
 - **Light and dark theme**: follows your system, toggle in the top-right,
   remembered per browser
+- **Accounts**: everyone has their own decks and streak. Sign-up is open by
+  default; an admin sees every account, can open anyone's decks, reset
+  passwords, promote admins, delete accounts. No email server needed
 - **Markdown answers**: bold, lists, code blocks and links render on the back
 - **Edit decks in-app**, rename them, reset progress, export back to `.md`
 - Per-chapter and per-deck stats (studied / correct)
@@ -43,14 +46,33 @@ Needs Docker with the Compose plugin. From the repo root:
 docker compose up --build
 ```
 
-Then open http://localhost:3000
+Then open http://localhost:3000 and sign in as `admin` / `admin`. You are
+asked to pick a real password right away.
+
+### Accounts and passwords
+
+- First run creates one admin from `FLASHMD_ADMIN_USER` / `FLASHMD_ADMIN_PASSWORD`
+  (defaults `admin` / `admin`, forced change on first sign-in). Set them in a
+  `.env` next to `docker-compose.yml` or in your shell before `docker compose up`.
+- Anyone can create an account from the sign-in page. Set
+  `FLASHMD_REGISTRATION=false` to close that; then only admins exist until
+  you open it again.
+- There is no "forgot password" email. An admin opens the account menu →
+  **Accounts**, hits the key icon next to the user, and hands over the
+  temporary password shown once. The user must pick a new one on next sign-in.
+- "Keep me signed in" keeps the session 30 days; otherwise 12 hours of
+  inactivity. Sessions survive restarts (stored under `backend/data/sessions`).
+- Decks and activity that existed before accounts were added belong to the
+  first admin.
 
 That builds and runs both containers. The frontend (nginx) serves the app and
 proxies `/api` to the backend, so port 3000 is the only one you touch.
 
-Decks and progress are written to `backend/data/decks.json` on the host (bind
-mounted into the backend). They survive `docker compose down` and `up` — to
-wipe everything, just delete that file. Back it up by copying it.
+Decks, progress, accounts and sessions are written to `backend/data/` on the
+host (bind mounted into the backend): `decks.json`, `activity.json`,
+`users.json` (bcrypt hashes, no plain passwords), `sessions/`. They survive
+`docker compose down` and `up` — to wipe everything, delete the folder. Back it
+up by copying it.
 
 Stop with `Ctrl+C`, or run detached with `docker compose up --build -d` and
 stop later with `docker compose down`.
@@ -99,7 +121,23 @@ The backend parses uploaded markdown into cards, stores decks and study
 progress, and serves them back. Storage is a plain JSON file, no database. The
 frontend needs the backend running to load, save, or list decks.
 
-### REST API (`/api/decks`)
+### REST API
+
+Everything under `/api` except `/api/auth/*` needs a session cookie
+(`POST /api/auth/login`). Decks are scoped to the signed-in user; admins may add
+`?owner=<userId>` to list someone else's.
+
+| Method | Path                            | Purpose                                   |
+| ------ | ------------------------------- | ----------------------------------------- |
+| POST   | `/api/auth/register`            | Create an account and sign in             |
+| POST   | `/api/auth/login`               | Sign in (`remember: true` for 30 days)    |
+| POST   | `/api/auth/logout`              | Sign out                                  |
+| GET    | `/api/auth/me`                  | Current user, or 401                      |
+| PUT    | `/api/auth/password`            | Change own password                       |
+| GET    | `/api/admin/users`              | All accounts (admin)                      |
+| POST   | `/api/admin/users/{id}/reset-password` | Temporary password, shown once (admin) |
+| PUT    | `/api/admin/users/{id}/role`    | `USER` or `ADMIN` (admin)                 |
+| DELETE | `/api/admin/users/{id}`         | Delete account and its decks (admin)      |
 
 | Method | Path                       | Purpose                            |
 | ------ | -------------------------- | ---------------------------------- |
@@ -118,7 +156,7 @@ Swagger UI is at `/swagger-ui/index.html` on the backend.
 ## Tests
 
 ```bash
-cd backend  && mvn test    # JUnit: parser, scheduler, controller
+cd backend  && mvn test    # JUnit: parser, scheduler, decks, auth
 cd frontend && npm test    # Vitest: parser, stats / spaced repetition
 ```
 
@@ -143,8 +181,8 @@ npm run dev
 ```
 
 In dev, Vite proxies `/api` to `localhost:8080`, so start the backend first.
-Decks are written to `backend/data/decks.json`. Override the path with the
-`FLASHMD_DATA_FILE` environment variable.
+Data is written under `backend/data/`. Override paths with `FLASHMD_DATA_FILE`,
+`FLASHMD_ACTIVITY_FILE`, `FLASHMD_USERS_FILE`, `FLASHMD_SESSION_DIR`.
 
 ## Layout
 

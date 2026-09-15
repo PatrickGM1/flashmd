@@ -1,3 +1,4 @@
 package com.flashmd.controller.dto;
 
-public record CreateDeckRequest(String label, String content) {}
+/** owner is honored only for admins; everyone else creates decks for themselves. */
+public record CreateDeckRequest(String label, String content, String owner) {}

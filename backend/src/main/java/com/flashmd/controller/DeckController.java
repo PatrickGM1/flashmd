@@ -1,5 +1,6 @@
 package com.flashmd.controller;
 
+import com.flashmd.auth.CurrentUser;
 import com.flashmd.controller.dto.CreateDeckRequest;
 import com.flashmd.controller.dto.DeckSummary;
 import com.flashmd.controller.dto.ProgressRequest;
@@ -41,9 +42,10 @@ public class DeckController {
     }
 
     @GetMapping
-    @Operation(summary = "List saved decks with progress summary")
-    public List<DeckSummary> list() {
-        return store.findAll().stream().map(DeckSummary::of).toList();
+    @Operation(summary = "List your decks with progress summary; admins may pass ?owner= to see another user's")
+    public List<DeckSummary> list(@RequestParam(required = false) String owner) {
+        String who = (owner != null && CurrentUser.isAdmin()) ? owner : CurrentUser.id();
+        return store.findByOwner(who).stream().map(DeckSummary::of).toList();
     }
 
     @GetMapping("/{id}")
@@ -60,7 +62,8 @@ public class DeckController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No flashcards found in deck");
         }
         String label = (req.label() == null || req.label().isBlank()) ? "Untitled deck" : req.label().trim();
-        Deck deck = new Deck(UUID.randomUUID().toString(), label, chapters, Progress.empty());
+        String owner = (req.owner() != null && CurrentUser.isAdmin()) ? req.owner() : CurrentUser.id();
+        Deck deck = new Deck(UUID.randomUUID().toString(), label, chapters, Progress.empty(), owner);
         return ResponseEntity.status(HttpStatus.CREATED).body(store.save(deck));
     }
 
@@ -84,7 +87,7 @@ public class DeckController {
             }
         }
         String lastStudied = deck.progress() == null ? null : deck.progress().lastStudied();
-        return store.save(new Deck(deck.id(), label, chapters, new Progress(kept, lastStudied)));
+        return store.save(new Deck(deck.id(), label, chapters, new Progress(kept, lastStudied), deck.ownerId()));
     }
 
     @PutMapping("/{id}/progress")
@@ -106,7 +109,7 @@ public class DeckController {
                 graded++;
             }
         }
-        activity.record(graded);
+        activity.record(deck.ownerId(), graded);
         return store.save(deck.withProgress(new Progress(cards, today)));
     }
 
@@ -122,7 +125,7 @@ public class DeckController {
     public Deck rename(@PathVariable String id, @RequestBody RenameRequest req) {
         Deck deck = require(id);
         String label = (req.label() == null || req.label().isBlank()) ? deck.label() : req.label().trim();
-        return store.save(new Deck(deck.id(), label, deck.chapters(), deck.progress()));
+        return store.save(new Deck(deck.id(), label, deck.chapters(), deck.progress(), deck.ownerId()));
     }
 
     public record RenameRequest(String label) {}
@@ -130,15 +133,15 @@ public class DeckController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a deck")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        if (!store.delete(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Deck not found");
-        }
+        require(id);
+        store.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    /** The deck, if it exists and is yours (admins see everything). Otherwise 404, never 403: no deck enumeration. */
     private Deck require(String id) {
         Deck deck = store.find(id);
-        if (deck == null) {
+        if (deck == null || !(CurrentUser.isAdmin() || deck.ownerId().equals(CurrentUser.id()))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Deck not found");
         }
         return deck;
