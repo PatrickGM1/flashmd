@@ -5,6 +5,7 @@ import { fonts, useThemeMode } from '../theme'
 import { useAuth } from '../auth'
 import { ink } from '../ui'
 import { Chip } from './cards'
+import HowTo from './HowTo'
 
 interface Props {
   left?: ReactNode
@@ -66,10 +67,10 @@ export function AccountMenu() {
       >
         {me.username[0].toUpperCase()}
       </Chip>
-      <Menu anchorEl={anchor} open={!!anchor} onClose={close} PaperProps={{ sx: { minWidth: 200, borderRadius: '10px', mt: 1 } }}>
+      <Menu anchorEl={anchor} open={!!anchor} onClose={close} PaperProps={{ sx: { minWidth: 200, mt: 1 } }}>
         <Box px={2} py={1}>
-          <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{me.username}</Typography>
-          <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>{admin ? 'Admin' : 'Player'}</Typography>
+          <Typography sx={{ fontWeight: 600, fontSize: 14, color: ink.card }}>{me.username}</Typography>
+          <Typography sx={{ fontSize: 12, color: ink.cardMuted }}>{admin ? 'Admin' : 'Player'}</Typography>
         </Box>
         <Divider />
         {admin && (
@@ -102,6 +103,7 @@ export default function Shell({ left, right, children, maxWidth = 'sm', fill }: 
         <Box display="flex" alignItems="center" minWidth={0}>{left}</Box>
         <Box display="flex" alignItems="center" gap={1}>
           {right}
+          <HowTo />
           <ThemeToggle />
           <AccountMenu />
         </Box>

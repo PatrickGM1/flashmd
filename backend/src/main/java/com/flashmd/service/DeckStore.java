@@ -70,11 +70,12 @@ public class DeckStore {
         return decks.values().stream().filter(d -> ownerId.equals(d.ownerId())).toList();
     }
 
-    /** Decks saved before accounts existed have no owner; hand them to the given user. */
-    public synchronized int adoptOrphans(String ownerId) {
+    /** Decks with no owner (pre-accounts) or an owner that no longer exists (users.json lost) go to the given user. */
+    public synchronized int adoptOrphans(String ownerId, java.util.Set<String> knownUsers) {
         int n = 0;
         for (var e : decks.entrySet()) {
-            if (e.getValue().ownerId() == null) {
+            String o = e.getValue().ownerId();
+            if (o == null || !knownUsers.contains(o)) {
                 e.setValue(e.getValue().withOwner(ownerId));
                 n++;
             }

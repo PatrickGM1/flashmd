@@ -24,7 +24,8 @@ public class FlashmdApplication {
     CommandLineRunner adoptLegacyData(UserStore users, DeckStore decks, ActivityStore activity) {
         return args -> {
             String admin = users.firstAdmin().id();
-            int n = decks.adoptOrphans(admin);
+            var known = users.findAll().stream().map(u -> u.id()).collect(java.util.stream.Collectors.toSet());
+            int n = decks.adoptOrphans(admin, known);
             if (n > 0) log.info("Assigned {} pre-existing decks to admin", n);
             activity.adoptLegacy(admin);
         };
