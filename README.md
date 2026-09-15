@@ -19,6 +19,8 @@
   recede. "Due for review" and "Study all due" replay the weakest cards first
 - **Undo** a mis-grade mid-session; live correct / missed tally
 - **Daily streak** tracked across sessions
+- **Light and dark theme**: follows your system, toggle in the top-right,
+  remembered per browser
 - **Markdown answers**: bold, lists, code blocks and links render on the back
 - **Edit decks in-app**, rename them, reset progress, export back to `.md`
 - Per-chapter and per-deck stats (studied / correct)
@@ -89,7 +91,8 @@ See [`example.md`](example.md) for a full deck.
 
 ## Stack
 
-- Frontend: React + Vite + TypeScript + MUI, served by nginx in Docker
+- Frontend: React + Vite + TypeScript + MUI, served by nginx in Docker.
+  Fonts are self-hosted, no CDN calls at runtime.
 - Backend: Spring Boot (Java 21)
 
 The backend parses uploaded markdown into cards, stores decks and study
@@ -119,7 +122,6 @@ cd backend  && mvn test    # JUnit: parser, scheduler, controller
 cd frontend && npm test    # Vitest: parser, stats / spaced repetition
 ```
 
-CI runs both on every push and pull request (`.github/workflows/ci.yml`).
 
 ## Local development (without Docker)
 
@@ -152,4 +154,6 @@ flashmd/
   frontend/   React + Vite app
   docker-compose.yml
   example.md  sample deck
+  PRODUCT.md  what the product is and must stay
+  DESIGN.md   the visual system (tokens, components, rules)
 ```
