@@ -66,6 +66,23 @@ public class DeckStore {
         return new ArrayList<>(decks.values());
     }
 
+    public synchronized List<Deck> findByOwner(String ownerId) {
+        return decks.values().stream().filter(d -> ownerId.equals(d.ownerId())).toList();
+    }
+
+    /** Decks saved before accounts existed have no owner; hand them to the given user. */
+    public synchronized int adoptOrphans(String ownerId) {
+        int n = 0;
+        for (var e : decks.entrySet()) {
+            if (e.getValue().ownerId() == null) {
+                e.setValue(e.getValue().withOwner(ownerId));
+                n++;
+            }
+        }
+        if (n > 0) persist();
+        return n;
+    }
+
     public synchronized Deck find(String id) {
         return decks.get(id);
     }
